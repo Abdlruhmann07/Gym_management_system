@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Membership</title>
+</head>
+<body>
+    <h1>Create Membership</h1>
+    <form action="/memberships/addmembership" method="post">
+        <label for="membershipTitle">Membership Title:</label>
+        <input type="text" name="membershipTitle" required>
+        <br>
+
+        <label for="package">Package:</label>
+        <select name="package" required>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+            <option value="numberofmonths">Number of Months</option>
+        </select>
+        <br>
+
+        <label for="amount">Amount:</label>
+        <input type="number" name="amount" required>
+        <br>
+
+        <label for="description">Description:</label>
+        <textarea name="description" required></textarea>
+        <br>
+
+        <button type="submit">Create Membership</button>
+    </form>
+</body>
+</html>

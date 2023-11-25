@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add new Class</title>
+</head>
+<body>
+    <h1>Add new Class</h1>
+    <form action="/classes/addclass" method="post">
+        <label for="name">Class Name:</label>
+        <input type="text" name="name" required>
+        <br>
+
+        <label for="description">Description:</label>
+        <textarea name="description" required></textarea>
+        <br>
+
+        <label for="trainer">Class Trainer:</label>
+        <input type="text">
+        <br>
+
+        <label for="members">Members:</label>
+        <input type="text" name="members" required>
+        <br>
+
+        <button type="submit">Add</button>
+    </form>
+</body>
+</html>
