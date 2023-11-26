@@ -22,8 +22,10 @@ const equipmentsSchema = new Schema({
         default: 'available',
     },
     brand: {
-        type: Schema.Types.ObjectId,
-        ref: 'brand',
+        // type: Schema.Types.ObjectId,
+        // ref: 'brand',
+        type: String,
+        
     }
 
 }, { timestamps: true });
