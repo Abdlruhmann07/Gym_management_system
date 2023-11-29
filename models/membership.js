@@ -19,5 +19,5 @@ const membershipSchema = new Schema({
     }
 });
 
-const membership = new model('membership', membershipSchema)
-module.exports = membership;
+const Membership = new model('Membership', membershipSchema)
+module.exports = Membership;

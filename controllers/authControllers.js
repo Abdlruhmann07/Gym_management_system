@@ -1,7 +1,8 @@
 const User = require('../models/user');
+const Employee = require('../models/employee');
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.SECRET_KEY
-const LOGIN_EXPIRES = process.env.LOGIN_EXPIRES
+// const LOGIN_EXPIRES = process.env.LOGIN_EXPIRES
 const util = require('node:util');
 
 // signing tokens function
@@ -18,9 +19,8 @@ exports.signup = async (req, res) => {
         // res.status(201).json({ message: 'Successful Register',token , user: newUser });
         res.cookie('token', token, {
             httpOnly: true,
-        })
-        res.redirect('/')
-
+        }).redirect('/');
+        
     } catch (err) {
         res.status(400).json({
             status: 'failed',
@@ -28,7 +28,31 @@ exports.signup = async (req, res) => {
         })
     }
 };
-
+// signup trainer
+// exports.signupTrainer = async (req, res) => {
+//     // console.log(req.body);
+//     try {
+//         const {
+//             email, password, name, age, address, phone, payroll, photo, Classes
+//         } = req.body;
+//         const newTrainer = await Employee.create(
+//             {
+//                 email, password, name, age, address, phone, payroll, photo, Classes, role: 'Trainer',
+//             }
+//         )
+//         const token = signToken(newTrainer);
+//         // res.
+//         res.cookie('token', token, {
+//             httpOnly: true,
+//         }).status(201).json({ message: 'Successful Register', token, employoee: newTrainer });
+//         // res.redirect('/')
+//     } catch (err) {
+//         res.status(500).json({
+//             status: 'failed',
+//             message: err.message,
+//         })
+//     }
+// };
 // login users
 exports.login = async (req, res, next) => {
     try {
@@ -58,9 +82,10 @@ exports.login = async (req, res, next) => {
         // })
         res.redirect('/');
     } catch (err) {
-        console.log(err.message);
+        res.status(500).json({ state: 'error', message: err.message });
     }
 }
+
 // logout users
 exports.logout = (req, res) => {
     res.cookie('token', '', { maxAge: 1 });
@@ -80,15 +105,12 @@ exports.authenticate = async (req, res, next) => {
     if (!token) {
         return res.status(400).send({ message: 'you are not logged in' });
     }
-    // Validate or verify the token
+    // verify the token
     try {
         const decodedToken = await util.promisify(jwt.verify)(token, SECRET_KEY);
         console.log(decodedToken);
         // You can also attach the decoded token to the user
         const user = await User.findById(decodedToken.id);
-        // if(!user) {
-        //     res.s
-        // }
         req.user = user;
         next();
     } catch (err) {

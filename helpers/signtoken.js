@@ -6,7 +6,7 @@ const signToken = function (user) {
 
     const payload = {
         id: user._id,
-        username: user.username,
+        name: user.name,
         role: user.role
     };
     return jwt.sign(payload, SECRET_KEY,

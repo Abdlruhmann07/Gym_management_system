@@ -15,11 +15,15 @@ const membershipsRoutes = require('./routes/Admin/membershipRoutes');
 const classesRoutes = require('./routes/Admin/ClassRoutes');
 const memberRoutes = require('./routes/Admin/memberRoutes')
 const equipmentRoutes = require('./routes/Admin/EquipmentRoutes');
+const employeeRoutes = require('./routes/Admin/employeeRoutes');
+const trianerRoutes = require('./routes/Admin/trainerRoutes');
 app.use(authRoutes);
 app.use('/api/admin/memberships', membershipsRoutes);
 app.use('/api/admin/members', memberRoutes);
 app.use('/api/admin/classes', classesRoutes);
 app.use('/api/admin/equipments', equipmentRoutes);
+app.use('/api/admin/employees', employeeRoutes);
+app.use('/api/admin/trainers', trianerRoutes);
 //End
 
 // Database connection

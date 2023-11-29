@@ -5,17 +5,17 @@ const userSchema = new Schema({
     firstname: {
         type: String,
         required: true,
-    },
+    },// required
     lastname: {
         type: String,
         required: true,
-    },
+    },// required
     username: {
         type: String,
         required: [true, 'User name is required'],
         trim: true,
         unique: true,
-    },
+    },// required
     email: {
         type: String,
         required: [true, 'Email is Required'],
@@ -27,12 +27,12 @@ const userSchema = new Schema({
             },
             message: "Invalid email format",
         },
-    },
+    },// required Unique
     password: {
         type: String,
         required: [true, 'Passowrd is Required'],
         minlength: [8, 'Too Short Passowrd'],
-    },
+    },// required
     confirmpassword: {
         type: String,
         required: [true, 'Please confirm your password'],
@@ -43,30 +43,54 @@ const userSchema = new Schema({
             },
             message: 'Password and confirmPassword do not match.',
         }
-    },
+    },// required
     phonenumber: {
         type: String,
         required: true,
+    },// required
+    address: {
+        street: {
+            type: String,
+        },
+        city: {
+            type: String,
+        },
+        country: {
+            type: String,
+        },
     },
     authToken: {
         type: String,
         default: '',
         // required: false,
     },
+    // fields for members
     membershipPlan: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'membershipPlan'
+            ref: 'Membership'
         },
     ],
     enrolledSessions: [
         {
             type: mongoose.Schema.Types.ObjectId,
+            ref: 'Class'
         },
+    ],
+    // fields for trainers
+    payroll: {
+        type: Number,
+        required: true,
+    },// required
+    trainerSessions: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Class'
+        }
     ],
     role: {
         type: String,
-        enum: ["member", "admin"],
+        enum: ["member", "admin", "trainer"],
         default: "member",
     },
     photo: String,
