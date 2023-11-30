@@ -87,3 +87,7 @@ exports.deleteTrainer = async (req, res) => {
         res.status(500).json({ state: 'error', message: err.message })
     }
 }
+// assign trainer to class
+exports.assignTrainerToClass = async (req , res) => {
+    
+};

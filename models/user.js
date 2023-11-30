@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const { Schema, model } = mongoose;
 const userSchema = new Schema({
+    id: {
+        type: Number,
+    },
     firstname: {
         type: String,
         required: true,
@@ -80,7 +83,9 @@ const userSchema = new Schema({
     // fields for trainers
     payroll: {
         type: Number,
-        required: true,
+        required: function () {
+            return this.role === 'trainer';
+        }
     },// required
     trainerSessions: [
         {

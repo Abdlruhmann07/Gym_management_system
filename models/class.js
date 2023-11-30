@@ -11,20 +11,16 @@ const classSchema = new Schema({
     },
     classTrainer: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        default: null,
     },
     members: [
         {
             type: Schema.Types.ObjectId,
             ref: 'User',
+            default: [],
         }
     ],
-    // startdate: {
-    //     type: Date,
-    // },
-    // enddate: {
-    //     type: Date,
-    // },
     price: {
         type: Number,
         required: true,
