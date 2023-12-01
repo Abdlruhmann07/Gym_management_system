@@ -16,6 +16,8 @@ router.get('/logout', logout);
 router.get('/', authenticate, (req, res) => {
     res.render('home', { user: req.user });
 })
-
+router.get('/home', authenticate, (req, res) => {
+    res.send('Home Page')
+});
 
 module.exports = router;

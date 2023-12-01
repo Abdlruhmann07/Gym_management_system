@@ -11,19 +11,9 @@ app.set('view engine', 'ejs');
 app.set('')
 // mounting routes
 const authRoutes = require('./routes/authRoutes');
-const membershipsRoutes = require('./routes/Admin/membershipRoutes');
-const classesRoutes = require('./routes/Admin/ClassRoutes');
-const memberRoutes = require('./routes/Admin/memberRoutes')
-const equipmentRoutes = require('./routes/Admin/EquipmentRoutes');
-const employeeRoutes = require('./routes/Admin/employeeRoutes');
-const trianerRoutes = require('./routes/Admin/trainerRoutes');
+const adminRoutes = require('./routes/Admin/index');
 app.use(authRoutes);
-app.use('/api/admin/memberships', membershipsRoutes);
-app.use('/api/admin/members', memberRoutes);
-app.use('/api/admin/classes', classesRoutes);
-app.use('/api/admin/equipments', equipmentRoutes);
-app.use('/api/admin/employees', employeeRoutes);
-app.use('/api/admin/trainers', trianerRoutes);
+app.use('/api/admin', adminRoutes);
 //End
 
 // Database connection

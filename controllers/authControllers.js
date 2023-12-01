@@ -20,7 +20,7 @@ exports.signup = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
         }).redirect('/');
-        
+
     } catch (err) {
         res.status(400).json({
             status: 'failed',
@@ -80,7 +80,11 @@ exports.login = async (req, res, next) => {
         //     user,
         //     token,
         // })
-        res.redirect('/');
+        if (user.role === 'admin') {
+            res.redirect('/');
+        }else if (user.role === 'member'){
+            res.redirect('/home')
+        }
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
     }

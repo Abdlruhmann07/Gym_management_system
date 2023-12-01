@@ -4,12 +4,13 @@ const Membership = require('../../models/membership');
 exports.addMemberShip = async (req, res) => {
     try {
         console.log(req.body)
-        const { membershipTitle, package, amount, description } = req.body;
+        const { membershipTitle, description, price, package, features } = req.body;
         const newMembership = await Membership.create({
-            membershipTitle: membershipTitle,
-            package: package,
-            amount: amount,
-            description: description,
+            membershipTitle,
+            description,
+            price,
+            package,
+            features
         })
         res.status(201).json({ state: 'success', data: newMembership })
     } catch (e) {
@@ -43,6 +44,19 @@ exports.getSingleMembership = async (req, res) => {
     }
 
 };
+// Update single membership PUT , Private
+exports.updateMembership = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const updatedMembership = await Membership.findByIdAndUpdate(id, req.body, { new: true });
+        if (!updatedMembership) {
+            res.status(404).json({ state: 'error', message: 'Membership could not be found' });
+        }
+        res.status(200).json({ state: 'success', data: updatedMembership });
+    } catch (err) {
+        res.status(500).json({ state: 'error', message: err.message });
+    }
+}
 // Delete single membeship
 exports.deleteSingleMembership = async (req, res) => {
     try {

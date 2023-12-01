@@ -65,6 +65,7 @@ exports.deleteMember = async (req, res) => {
         res.status(500).json({ state: 'error', message: err.message })
     }
 }
+// add membership to member
 
 // render Pages
 exports.getaddMember = async (req, res) => {

@@ -68,12 +68,12 @@ const userSchema = new Schema({
         // required: false,
     },
     // fields for members
-    membershipPlan: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Membership'
-        },
-    ],
+    membershipPlan:
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Membership'
+    },
+
     enrolledSessions: [
         {
             type: mongoose.Schema.Types.ObjectId,
@@ -93,6 +93,17 @@ const userSchema = new Schema({
             ref: 'Class'
         }
     ],
+    attendance: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Attendance',
+            index: true
+        }
+    ],
+    checkInCode: {
+        type: Number,
+        unique: true
+    },
     role: {
         type: String,
         enum: ["member", "admin", "trainer"],
