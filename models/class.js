@@ -24,7 +24,17 @@ const classSchema = new Schema({
     price: {
         type: Number,
         required: true,
-    }
+    },
+    noOfSessions: {
+        type: Number,
+        required: true,
+    },
+    attendace: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Attendance'
+        }
+    ]
 });
 
 const Class = new model('Class', classSchema);

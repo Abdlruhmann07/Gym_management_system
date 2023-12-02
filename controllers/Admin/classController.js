@@ -187,6 +187,11 @@ exports.viewAllClassMembers = async (req, res) => {
         res.status(500).json({ message: 'An error occurred while fetching class members' });
     }
 };
+
+// check in members
+exports.checkInClassMembers = async (req , res) => {
+
+}
 // View pages
 exports.getAddClaasPage = (req, res) => {
     res.render('adminPages/addClass')

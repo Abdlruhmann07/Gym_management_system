@@ -1,12 +1,13 @@
 const { Schema, model } = require('mongoose')
 const attendanceSchema = new Schema({
+    // member attendance
     memberId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
         index: true
     },
-    checkInCode:{
+    checkInCode: {
         type: Number,
         unique: true
     },
@@ -16,8 +17,12 @@ const attendanceSchema = new Schema({
         index: true,
         default: Date.now()
     },
-    checkOutTime: {
-        type: Date
+    // for class attendance
+    classId: {
+        type: Schema.Types.ObjectId,
+    },
+    noOfSessionsLeft: {
+        type: Number,
     }
 }, {
     timestamps: true
