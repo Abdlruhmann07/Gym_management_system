@@ -34,7 +34,25 @@ const classSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Attendance'
         }
-    ]
+    ],
+    rate: {
+        type: [
+            {
+                user: {
+                    type: Schema.Types.ObjectId,
+                    ref: 'User',
+                    required: true
+                },
+                rating: {
+                    type: Number,
+                    required: true,
+                    min: 1,
+                    max: 5
+                }
+            }
+        ],
+        default: []
+    }
 });
 
 const Class = new model('Class', classSchema);

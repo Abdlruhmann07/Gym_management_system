@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const { addMember, getaddMember, getAllMembers, viewSingleMember, deleteMember, updateSingleMember } = require('../../controllers/Admin/memberControllers');
-const { authenticate, authorize } = require('../../controllers/authControllers');
+const { authenticate, authorize } = require('../../middlewares/auth');
 router.get('/', authenticate, getAllMembers)
 router.get('/:id', authenticate, viewSingleMember)
 router.post('/addmember', authenticate, authorize('admin'), addMember)

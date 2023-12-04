@@ -8,10 +8,12 @@ const equipmentRoutes = require('./EquipmentRoutes');
 const employeeRoutes = require('./employeeRoutes');
 const trianerRoutes = require('./trainerRoutes');
 
+
 router.use('/memberships', membershipsRoutes);
 router.use('/members', memberRoutes);
 router.use('/classes', classesRoutes);
 router.use('/equipments', equipmentRoutes);
 router.use('/employees', employeeRoutes);
 router.use('/trainers', trianerRoutes);
+router.use('/employees', employeeRoutes);
 module.exports = router

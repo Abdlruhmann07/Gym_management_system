@@ -38,11 +38,9 @@ exports.getSingleClass = async (req, res) => {
     try {
         const id = req.params.id;
         const singleClass = await Class.findById(id);
-
         if (!singleClass) {
             return res.status(404).json({ state: 'error', message: 'No class found' });
         }
-
         res.status(200).json({ state: 'success', data: singleClass });
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
@@ -169,9 +167,7 @@ exports.deleteMembersFromClass = async (req, res) => {
         res.status(500).json({ message: 'An error occurred while removing members from class' });
     }
 };
-
 // view all class members
-
 exports.viewAllClassMembers = async (req, res) => {
     const { classId } = req.params;
 
@@ -188,10 +184,6 @@ exports.viewAllClassMembers = async (req, res) => {
     }
 };
 
-// check in members
-exports.checkInClassMembers = async (req , res) => {
-
-}
 // View pages
 exports.getAddClaasPage = (req, res) => {
     res.render('adminPages/addClass')

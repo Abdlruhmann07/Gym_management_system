@@ -5,7 +5,7 @@ const {
     getAddMembership,
     getAllMemberships,
 } = require('../../controllers/Admin/membershipController');
-const { authenticate, authorize } = require('../../controllers/authControllers');
+const { authenticate, authorize } = require('../../middlewares/auth');
 
 router.post('/addmembership', authenticate, authorize('admin'), addMemberShip)
 router.get('/addmembership', authenticate, getAddMembership)

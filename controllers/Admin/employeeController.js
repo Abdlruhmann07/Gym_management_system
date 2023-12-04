@@ -1,14 +1,15 @@
 const Employee = require('../../models/employee');
 const signToken = require('../../helpers/signtoken');
+const User = require('../../models/user');
 // employee 
 // add new employee
-exports.addEmployee = (req, res) => {
+exports.addEmployee = async (req, res) => {
     try {
         const {
-            name, age, adress, phone, payroll, photo
+            name, age, address, phone, payroll, photo
         } = req.body;
-        const employee = Employee.create({
-            name, age, adress, phone, payroll, photo
+        const employee = await Employee.create({
+            name, age, address, phone, payroll, photo
         })
         res.status(200).json({ state: 'success', data: employee });
     } catch (err) {
@@ -16,20 +17,31 @@ exports.addEmployee = (req, res) => {
     }
 };
 // view all employees
-exports.viewAllEmployees = (req, res) => {
+exports.viewAllEmployees = async (req, res) => {
     try {
-        const employees = Employee.find({ role: 'employee' });
-        if (equipments.length === 0) return res.status(404).json('No employees yet');
+        const employees = await Employee.find({});
+        if (employees.length === 0) return res.status(404).json('No employees yet');
         res.status(200).json({ state: 'success', data: employees });
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
     }
 };
+// view single employee
+exports.viewSingleEmployee = async (req, res) => {
+    const id = req.params.id
+    try {
+        const employee = await Employee.findById(id);
+        if (!employee) { return res.status(404).json({ message: 'No employee with this id' }) }
+        res.status(201).json({ state: 'success', data: employee })
+    } catch (err) {
+        res.status(500).json({ state: 'error', message: err.message });
+    }
+};
 // update employee
-exports.updateEmployee = (req, res) => {
+exports.updateEmployee = async (req, res) => {
     try {
         const id = req.params.id;
-        const updatedEmployee = Employee.findByIdAnUpdate(id, req.body, { new: true });
+        const updatedEmployee = await Employee.findByIdAndUpdate(id, req.body, { new: true });
         if (!updatedEmployee) {
             res.status(404).json({ state: 'error', message: 'No employee found' })
         }
@@ -39,50 +51,20 @@ exports.updateEmployee = (req, res) => {
     }
 };
 // delete employee
-exports.deleteEmployee = (req, res) => {
+exports.deleteEmployee = async (req, res) => {
     try {
         const id = req.params.id;
-        const deletedEmployee = Employee.findByIdAndDelete(id);
-        res.status(204).json({ state: 'success', deleted: deletedEmployee });
+        const employees = await Employee.find({});
+        if (employees.length < 1) {
+            return res.status(404).json({ state: 'error', message: 'No employees to delete' })
+        }
+        const deletedEmployee = await Employee.findByIdAndDelete(id);
+        if (!deletedEmployee)  {
+            return res.status(404).json({ state: 'error', message: 'No Employee Found with this id' });
+        }
+        res.status(200).json({ state: 'success', deleted: deletedEmployee });
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
     }
 }
-//Trainer
-// signup trainer
-exports.signupTrainer = async (req, res) => {
-    // console.log(req.body);
-    try {
-        const {
-            email, password, name, age, address, phone, payroll, photo, Classes
-        } = req.body;
-        const newTrainer = await Employee.create(
-            {
-                email, password, name, age, address, phone, payroll, photo, Classes, role: 'Trainer',
-            }
-        )
-        const token = signToken(newTrainer);
-        // res.
-        res.cookie('token', token, {
-            httpOnly: true,
-        }).status(201).json({ message: 'Successful Register', token, employoee: newTrainer });
-        // res.redirect('/')
-    } catch (err) {
-        res.status(500).json({
-            status: 'failed',
-            message: err.message,
-        })
-    }
-};
-// login trainer
 
-// view all trainers
-// update trainer
-// delete trainer
-// sign trainer to class
-
-// Manager
-// add manager
-// view all managers
-// update manager
-// delete manager
