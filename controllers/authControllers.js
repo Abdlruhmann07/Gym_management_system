@@ -1,8 +1,13 @@
 const User = require('../models/user');
+const Token = require('../models/token');
+const sendEmail = require('../helpers/sendmail');
+const crypto = require('crypto');
+
+
 
 // signing tokens function
 const signToken = require('../helpers/signtoken');
-
+// const clientUrl = ``
 // signup users
 exports.signup = async (req, res) => {
     console.log(req.body);
@@ -14,7 +19,7 @@ exports.signup = async (req, res) => {
         // res.status(201).json({ message: 'Successful Register',token , user: newUser });
         res.cookie('token', token, {
             httpOnly: true,
-        }).redirect('/');
+        }).redirect('/api/v1/login');
 
     } catch (err) {
         res.status(400).json({
@@ -58,7 +63,7 @@ exports.login = async (req, res, next) => {
         }
         // check if user is exist with that email
         const user = await User.findOne({ email }).select('+password');
-        console.log(user); // comment me
+        // console.log(user); // comment me
         const isMatch = await user.compareHashedPassword(password, user.password);
         //check if user exists and password matches
         if (!user || !isMatch) {
@@ -76,9 +81,9 @@ exports.login = async (req, res, next) => {
         //     token,
         // })
         if (user.role === 'admin') {
-            res.redirect('/');
-        }else if (user.role === 'member'){
-            res.redirect('/home')
+            res.redirect('/api/v1');
+        } else if (user.role === 'member') {
+            res.redirect('/api/v1')
         }
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
@@ -88,9 +93,80 @@ exports.login = async (req, res, next) => {
 // logout users
 exports.logout = (req, res) => {
     res.cookie('token', '', { maxAge: 1 });
-    res.redirect('/login');
+    res.redirect('/api/v1/login');
 }
 
+// forgett password
+exports.forgettPassword = async (req, res, next) => {
+    //1 GET USER BASED ON POSTED EMAIL 
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email })
+        if (!user) {
+            res.status(404).json({ state: 'error', message: 'no user found' })
+        }
+        //2 GENERATE A RANDOM RESET TOKEN
+        const resetToken = await user.createResetPasswordToken();
+
+        await user.save({ validateBeforeSave: false });
+        //2 SEND THE TOKEN BACK TO THE USER EMAIL
+        const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/resetPassword/${resetToken}`
+        const message = `We have received a password reset request. Please use the blow link to reset your password\n\n${resetUrl}\n\n This reset password link will expire after 10 minutes`
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: 'Password change request',
+                message: message
+            });
+            res.status(200).json({
+                state: 'success', message: 'password reset link sent to user email successfully'
+            });
+        } catch (err) {
+            user.passwordResetToken = undefined;
+            user.passwordResetTokenExpires = undefined;
+            await user.save({ validateBeforeSave: false });
+        }
+    } catch (err) {
+        res.status(500).json({ state: 'error', message: err.message })
+    }
+};
+// reset password
+exports.resetPassword = async (req, res) => {
+    try {
+        // CHECK IF TOKEN EXISTS OR NOT EXPIRED
+        const token = req.params.token
+        console.log(token)
+        const hashedToken = crypto
+            .createHash('sha256')
+            .update(token)
+            .digest('hex')
+        console.log(hashedToken)
+        // find the user by the token
+        const user = await User.findOne({
+            passwordResetToken: req.params.token,
+            passwordResetTokenExpires: {
+                $gt: Date.now()
+            }
+        })
+        console.log(user)
+        if (!user) {
+            return res.status(400).json({ state: 'error', message: 'request link has expired' });
+        }
+        // RESETING USER PASSWORD
+        const { password, confirmPassword } = req.body;
+        user.password = password
+        user.confirmPassword = confirmPassword
+        user.passwordResetToken = undefined;
+        user.passwordResetTokenExpires = undefined;
+        user.passwordChangedAt = Date.now();
+        await user.save();
+        // send response to the client 
+        // TODO: login the user
+        res.status(200).json({ state: 'success', data: user });
+    } catch (err) {
+        return res.status(500).json({ state: 'error', message: err.message })
+    }
+}
 
 // Pages GET PUBLICE
 

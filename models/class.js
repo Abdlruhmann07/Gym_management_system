@@ -13,6 +13,7 @@ const classSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
         default: null,
+        autopopulate: true
     },
     members: [
         {
@@ -29,7 +30,7 @@ const classSchema = new Schema({
         type: Number,
         required: true,
     },
-    attendace: [
+    attendance: [
         {
             type: Schema.Types.ObjectId,
             ref: 'Attendance'
@@ -52,7 +53,8 @@ const classSchema = new Schema({
             }
         ],
         default: []
-    }
+    },
+    averageRating: Number,
 });
 
 const Class = new model('Class', classSchema);

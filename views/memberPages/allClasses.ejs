@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Viewer</title>
+</head>
+<body>
+    <h1>Available Sessions</h1>
+    <ul>
+        <% classes.forEach(function(session) { %>
+            <li>
+                <strong><%= session.title %></strong> 
+                <strong><%= session.description %></strong> 
+                <form action="/api/v1/member/all-classes/join-session/<%= session._id %>" method="post">
+                    <button type="submit">Join</button>
+                </form>
+            </li>
+        <% }); %>
+    </ul>
+</body>
+</html>

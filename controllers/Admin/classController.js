@@ -97,11 +97,11 @@ exports.assignTrainerToClass = async (req, res) => {
         }
 
         myclass.classTrainer = trainerId;
-        await myclass.save();
+        await myclass.save({ validateBeforeSave: false });
 
         res.status(200).json({ message: 'Trainer assigned to class successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'An error occurred while assigning trainer to class' });
+        res.status(500).json({ state: 'error', message: error.message });
     }
 }
 // assign members to class

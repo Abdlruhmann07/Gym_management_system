@@ -1,0 +1,39 @@
+<!-- myClasses.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Classes</title>
+</head>
+<body>
+    <h1>My Classes</h1>
+    <ul>
+        <% memberSessions.forEach(function(session) { %>
+            <li>
+                <h2><%= session.name %></h2>
+                <p><strong>Description:</strong> <%= session.description %></p>
+                <p><strong>Trainer:</strong> <%= session.classTrainer.username %></p>
+                <p><strong>Price:</strong> <%= session.price %></p>
+                <p><strong>Number of Sessions:</strong> <%= session.noOfSessions %></p>
+                <p><strong>Attendance:</strong> 
+                <% session.attendace.forEach(function(attendance) { %>
+                    <%= attendance.date %> <!-- Assuming date is a field in the Attendance model -->
+                <% }); %>
+                </p>
+                <p><strong>Members:</strong> 
+                <% session.members.forEach(function(member) { %>
+                    <%= member.name %> <!-- Assuming name is a field in the User model -->
+                <% }); %>
+                </p>
+                <p><strong>Rating:</strong> 
+                <% session.rate.forEach(function(rating) { %>
+                    <%= rating.user.name %>: <%= rating.rating %> <!-- Assuming name and rating are fields in the User and Rating models respectively -->
+                <% }); %>
+                </p>
+            </li>
+        <% }); %>
+    </ul>
+</body>
+</html>

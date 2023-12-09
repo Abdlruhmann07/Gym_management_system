@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const crypto = require("crypto");
 const { Schema, model } = mongoose;
 const userSchema = new Schema({
     id: {
@@ -70,10 +71,16 @@ const userSchema = new Schema({
     // fields for members
     membershipPlan:
     {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Membership'
     },
-
+    payments: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Payment',
+            default: [];
+        }
+    ],
     enrolledSessions: [
         {
             type: mongoose.Schema.Types.ObjectId,
@@ -93,6 +100,7 @@ const userSchema = new Schema({
             ref: 'Class'
         }
     ],
+    // for all users
     attendance: [
         {
             type: Schema.Types.ObjectId,
@@ -110,6 +118,9 @@ const userSchema = new Schema({
         default: "member",
     },
     photo: String,
+    passwordResetToken: String,
+    passwordResetTokenExpires: Date,
+    passwordChangedAt: Date,
 },
     {
         timestamps: true,
@@ -125,6 +136,20 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.compareHashedPassword = async (pswd, pswdDB) => {
     return await bcrypt.compare(pswd, pswdDB);
 };
+userSchema.methods.createResetPasswordToken = async function () {
+    const resetToken = crypto.randomBytes(32).toString('hex') // plaintext token
+
+    this.passwordResetToken = crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex')
+    // this.passwordResetToken = resetToken; // wrong aborach NOT SAFE
+
+    this.passwordResetTokenExpires = Date.now() + 10 * 60 * 1000;
+    // return the reset token
+    console.log(resetToken, this.passwordResetToken)
+    return resetToken;
+}
 
 const User = new model('User', userSchema);
 module.exports = User;
