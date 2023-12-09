@@ -78,7 +78,7 @@ const userSchema = new Schema({
         {
             type: Schema.Types.ObjectId,
             ref: 'Payment',
-            default: [];
+            default: [],
         }
     ],
     enrolledSessions: [
