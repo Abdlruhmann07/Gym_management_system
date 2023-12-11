@@ -84,7 +84,8 @@ const userSchema = new Schema({
     enrolledSessions: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Class'
+            ref: 'Class',
+            default: []
         },
     ],
     // fields for trainers
@@ -118,8 +119,10 @@ const userSchema = new Schema({
         default: "member",
     },
     photo: String,
-    passwordResetToken: String,
-    passwordResetTokenExpires: Date,
+    // passwordResetToken: String,
+    // passwordResetTokenExpires: Date,
+    otp: String,
+    otpExpires: Date,
     passwordChangedAt: Date,
 },
     {
@@ -132,7 +135,13 @@ userSchema.pre('save', async function (next) {
     this.confirmPassword = undefined;
     next();
 });
-
+// generate user Check In Code
+userSchema.pre('save', function (next) {
+    if (this.isNew) {
+        this.checkInCode = Math.floor(1000 + Math.random() * 9000);
+    }
+    next();
+});
 userSchema.methods.compareHashedPassword = async (pswd, pswdDB) => {
     return await bcrypt.compare(pswd, pswdDB);
 };
@@ -150,6 +159,11 @@ userSchema.methods.createResetPasswordToken = async function () {
     console.log(resetToken, this.passwordResetToken)
     return resetToken;
 }
-
+userSchema.methods.generateOTP = function () {
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    this.otp = otp
+    this.otpExpires = Date.now() + 10 * 60 * 1000;
+    return otp
+}
 const User = new model('User', userSchema);
 module.exports = User;

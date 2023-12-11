@@ -2,6 +2,7 @@ require('dotenv').config({});
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const PORT = process.env.PORT || 3000;
+const path = require('path');
 const app = express();
 
 // using middleware
@@ -14,11 +15,11 @@ app.set('')
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/Admin/index');
 const memberRoutes = require('./routes/memberRoutes');
-app.use('/api/v1/', authRoutes);
+app.use('/api/v1', authRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/member', memberRoutes);
 //End
-
+app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 // Database connection
 const dbConnect = require('./db/dbConnection');
 async function connect(dbConnect) {

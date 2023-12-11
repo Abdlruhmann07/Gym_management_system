@@ -40,4 +40,4 @@ const announcementSchema = new Schema({
     }
 })
 const Announcement = model('Announcement', announcementSchema);
-module.exports = announcementSchema
+module.exports = Announcement

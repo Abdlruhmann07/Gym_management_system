@@ -2,8 +2,7 @@ const User = require('../models/user');
 const Token = require('../models/token');
 const sendEmail = require('../helpers/sendmail');
 const crypto = require('crypto');
-
-
+const multer = require('multer');
 
 // signing tokens function
 const signToken = require('../helpers/signtoken');
@@ -106,11 +105,11 @@ exports.forgettPassword = async (req, res, next) => {
             res.status(404).json({ state: 'error', message: 'no user found' })
         }
         //2 GENERATE A RANDOM RESET TOKEN
-        const resetToken = await user.createResetPasswordToken();
+        const resetOtp = await user.generateOTP();
 
         await user.save({ validateBeforeSave: false });
         //2 SEND THE TOKEN BACK TO THE USER EMAIL
-        const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/resetPassword/${resetToken}`
+        const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/resetPassword/${resetOtp}`
         const message = `We have received a password reset request. Please use the blow link to reset your password\n\n${resetUrl}\n\n This reset password link will expire after 10 minutes`
         try {
             await sendEmail({
@@ -122,8 +121,8 @@ exports.forgettPassword = async (req, res, next) => {
                 state: 'success', message: 'password reset link sent to user email successfully'
             });
         } catch (err) {
-            user.passwordResetToken = undefined;
-            user.passwordResetTokenExpires = undefined;
+            user.otp = undefined;
+            user.otpExpires = undefined;
             await user.save({ validateBeforeSave: false });
         }
     } catch (err) {
@@ -134,17 +133,17 @@ exports.forgettPassword = async (req, res, next) => {
 exports.resetPassword = async (req, res) => {
     try {
         // CHECK IF TOKEN EXISTS OR NOT EXPIRED
-        const token = req.params.token
-        console.log(token)
-        const hashedToken = crypto
-            .createHash('sha256')
-            .update(token)
-            .digest('hex')
-        console.log(hashedToken)
+        const otp = req.params.otp
+        console.log(typeof otp)
+        // const hashedToken = crypto
+        //     .createHash('sha256')
+        //     .update(token)
+        //     .digest('hex')
+        // console.log(hashedToken)
         // find the user by the token
         const user = await User.findOne({
-            passwordResetToken: req.params.token,
-            passwordResetTokenExpires: {
+            otp: req.params.otp,
+            otpExpires: {
                 $gt: Date.now()
             }
         })
@@ -156,8 +155,8 @@ exports.resetPassword = async (req, res) => {
         const { password, confirmPassword } = req.body;
         user.password = password
         user.confirmPassword = confirmPassword
-        user.passwordResetToken = undefined;
-        user.passwordResetTokenExpires = undefined;
+        user.otp = undefined;
+        user.otpExpires = undefined;
         user.passwordChangedAt = Date.now();
         await user.save();
         // send response to the client 
@@ -178,4 +177,39 @@ exports.getLogin = (req, res) => {
 //get signup page
 exports.getSignup = (req, res) => {
     res.render('signup')
+}
+
+// UPLOAD FILE
+//TODO: CREATE MULTER STORAGE
+const multerStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/img/users');
+    },
+    filename: (req, file, cb) => {
+        const extention = file.mimetype.split('/')[1];
+        cb(null, `user-${req.user._id}-${Date.now()}.${extention}`)
+    },
+});
+//TODO: CREATE MULTER FILTER
+const multerFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image')) {
+        cb(null, true)
+    } else {
+        cb('error', false)
+    }
+}
+//TODO: CREATE UPLOAD OBJECT
+const upload = multer({
+    storage: multerStorage,
+    fileFilter: multerFilter,
+})
+//TODO: EXPORT THE UPLOAD MIDDLEWARE
+exports.uploadPhoto = upload.single('photo')
+exports.getUploadpage = (req, res) => {
+    res.render('upload')
+}
+exports.Upload = (req, res) => {
+    const file = req.file
+    console.log(file)
+    console.log(req.body)
 }

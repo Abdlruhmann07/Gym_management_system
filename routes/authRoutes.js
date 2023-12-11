@@ -14,7 +14,7 @@ router.get('/logout', logout);
 // forgett password 
 router.post('/forgettPassword', forgettPassword);
 // reset password
-router.patch('/resetPassword/:token', resetPassword);
+router.patch('/resetPassword/:otp', resetPassword);
 // get signup page
 router.get('/signup', getSignup);
 //
@@ -24,5 +24,9 @@ router.get('/', authenticate, (req, res) => {
 router.get('/home', authenticate, (req, res) => {
     res.send('Home Page')
 });
+// delete me upload TESTED
+const { getUploadpage, Upload, uploadPhoto } = require('../controllers/authControllers')
+router.get('/upload', authenticate, getUploadpage)
+router.post('/upload', authenticate, uploadPhoto, Upload)
 
 module.exports = router;

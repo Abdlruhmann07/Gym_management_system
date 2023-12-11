@@ -1,6 +1,6 @@
 // Admin 
 const User = require('../../models/user');
-// members:-
+// members EndPoints:-
 // Add new member 
 exports.addMember = async (req, res) => {
     try {
@@ -15,9 +15,18 @@ exports.addMember = async (req, res) => {
 // view all members
 exports.getAllMembers = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) - 1 || 0;
+        const limit = parseInt(req.query.limit) || 5;
+        const search = req.query.search || ""
+
         const members = await User.find({
             role: 'member',
-        });
+            $or: [
+                { username: { $regex: search, $options: 'i' } },
+                { checkInCode: search }
+            ]
+        }).skip(page * limit).limit(limit);
+        if (members.length < 1) return res.status(404).send('No Members Yet!')
         res.status(200).json({ state: 'success', data: members })
     } catch (err) {
         res.status(500).json({ state: 'error viewing members', message: err.message })
@@ -43,7 +52,7 @@ exports.viewSingleMember = async (req, res) => {
 exports.updateSingleMember = async (req, res) => {
     try {
         const id = req.params.id;
-        const updatedMember = await User.findByIdAndUpdate(id,  req.body , { new: true });
+        const updatedMember = await User.findByIdAndUpdate(id, req.body, { new: true });
         if (!updatedMember) {
             res.status(404).json({ state: 'error', message: 'no member found with this id' })
         }
@@ -65,7 +74,7 @@ exports.deleteMember = async (req, res) => {
         res.status(500).json({ state: 'error', message: err.message })
     }
 }
-// add membership to member
+
 
 // render Pages
 exports.getaddMember = async (req, res) => {

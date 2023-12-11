@@ -54,6 +54,12 @@ const classSchema = new Schema({
         ],
         default: []
     },
+    announcements: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Announcement'
+        }
+    ],
     averageRating: Number,
 });
 

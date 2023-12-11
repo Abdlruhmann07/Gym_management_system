@@ -26,7 +26,16 @@ exports.addClass = async (req, res) => {
 // View All classes GET PUBLIC
 exports.getAllClasses = async (req, res) => {
     try {
-        const classes = await Class.find({});
+        const page = parseInt(req.query.page) - 1 || 0;
+        const limit = parseInt(req.query.limit) || 5;
+        const search = req.query.search || ""
+
+        const classes = await Class.find({
+            $or: [
+                { username: { $regex: search, $options: 'i' } },
+                { _id: search },
+            ]
+        }).skip(page * limit);
         if (classes.length === 0) return res.status(404).json('No classes yet');
         res.status(200).json({ state: 'success', data: classes });
     } catch (err) {
@@ -106,26 +115,30 @@ exports.assignTrainerToClass = async (req, res) => {
 }
 // assign members to class
 exports.assignMembersToClass = async (req, res) => {
-    const { classId, memberIds } = req.body;
+    const { classId, memberId } = req.body;
 
     try {
         const myclass = await Class.findById(classId);
-        const members = await User.find({ _id: { $in: memberIds } }); // Array
-
+        const member = await User.findById({ _id: memberId }).populate('enrolledSessions'); // Array
         if (!myclass) {
             return res.status(404).json({ message: 'Class not found' });
         }
-
-        if (members.length !== memberIds.length) {
-            return res.status(404).json({ message: 'One or more members not found' });
+        // if (members.length !== memberIds.length) {
+        //     return res.status(404).json({ message: 'One or more members not found' });
+        // }
+        if (member.enrolledSessions.some(session => session._id.equals(classId))) {
+            return res.status(400).json({ message: 'User is already enrolled this session' });
+        } else {
+            // Update class by adding the member
+            myclass.members.push(memberId);
+            await myclass.save({ validateBeforeSave: false });
+            // Update Member by adding the class to his sessions
+            member.enrolledSessions.push(classId);
+            await member.save({ validateBeforeSave: false });
         }
-
-        myclass.members.push(...memberIds);
-        await myclass.save();
-
-        res.status(200).json({ message: 'Members assigned to class successfully' });
+        res.status(200).json({ message: 'Member assigned to class successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'An error occurred while assigning members to class' });
+        res.status(500).json({ state: 'error', message: error.message });
     }
 };
 // delete trainer from a class
@@ -170,17 +183,36 @@ exports.deleteMembersFromClass = async (req, res) => {
 // view all class members
 exports.viewAllClassMembers = async (req, res) => {
     const { classId } = req.params;
-
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 5;
+    const search = req.query.search || ""
+    const Expression = new RegExp(search, 'i');
     try {
-        const myclass = await Class.findById(classId).populate('members');
 
+        const myclass = await Class.findById(classId).populate('members');
+        console.log(myclass);
         if (!myclass) {
             return res.status(404).json({ message: 'Class not found' });
         }
 
-        res.status(200).json({ members: myclass.members });
+        let classMembers = myclass.members
+        console.log(classMembers)
+        if (search) {
+            classMembers = classMembers.filter(member => {
+                return (
+                    member.username.match(Expression) ||
+                    member.checkInCode && member.checkInCode.toString().match(Expression)
+                )
+            })
+        }
+        // console.log(classMembers)
+        // const totalPages = Math.ceil(classMembers.length / limit);
+        // const offset = (page - 1) * limit;
+        // classMembers = classMembers.slice(offset, offset + limit);
+        // console.log(classMembers);
+        res.status(200).json({ members: classMembers });
     } catch (error) {
-        res.status(500).json({ message: 'An error occurred while fetching class members' });
+        res.status(500).json({ state: 'error', message: error.message });
     }
 };
 

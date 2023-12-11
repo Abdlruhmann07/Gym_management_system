@@ -2,6 +2,8 @@ const Membership = require('../../models/membership')
 const Class = require('../../models/class')
 const User = require('../../models/user');
 const Payment = require('../../models/payment');
+const axios = require('axios');
+
 // helpers
 const generateTransactionId = require('../../helpers/generateTransactionId');
 // view all membership plans
@@ -12,7 +14,7 @@ exports.getAllMemberships = async (req, res) => {
             res.send('No availble memberships yet')
         } else {
             // res.status(200).json({ state: 'success', data: memberships })
-            res.render('memberships', { memberships })
+            res.render('memberPages/memberships', { memberships })
         }
     } catch (e) {
         res.status(500).json({ state: 'error', message: e.message });
@@ -41,29 +43,31 @@ exports.joinMembershipPlan = async (req, res) => {
         const planId = req.params.id;
         const selectedPlan = await Membership.findById(planId);
         if (!selectedPlan) return res.status(404).json({ message: 'No Plan found' })
-        // payment progress
-        try {
-            const userPayment = new Payment({
-                user: user._id,
-                price: selectedPlan.price,
-                paymentMethod: req.body.method,
-                transactionId: generateTransactionId(),
-                description: selectedPlan.description,
-                status: 'completed'
-            })
-            await userPayment.save();
-            user.payments.push(userPayment._id)
-        } catch (err) {
-            userPayment.status = 'failed'
-            return res.status(400).json({ state: 'error', message: 'error creating payment', content: err.message })
-        }
+        //! payment progress
+        // let userPayment ;
+        // try {
+        //     userPayment = new Payment({
+        //         user: user._id,
+        //         price: selectedPlan.price,
+        //         paymentMethod: req.body.method,
+        //         transactionId: generateTransactionId(),
+        //         description: selectedPlan.description,
+        //         status: 'completed'
+        //     })
+        //     await userPayment.save();
+        //     user.payments.push(userPayment._id)
+        // } catch (err) {
+        //     userPayment.status = 'failed'
+        //     return res.status(400).json({ state: 'error', message: 'error creating payment', content: err.message })
+        // }
+        //!
         // add it's id to the user property membershiPlan
         user.membershipPlan = selectedPlan._id;
         //save user
-        await user.save();
+        await user.save({ validateBeforeSave: false });
 
     } catch (err) {
-        res.status(500).status.josn({ state: 'error', message: err.message })
+        res.status(500).json({ state: 'error', message: err.message })
     }
 }
 // view my profile page
@@ -89,8 +93,8 @@ exports.joinClass = async (req, res) => {
         // find the selected class by id
         const sessionId = req.params.id
         // Check if the session is already in the enrolledSession array
-        if (user.enrolledSessions.includes(sessionId)) {
-            return res.status(400).json({ message: 'User is already enrolled in this session' });
+        if (user.enrolledSessions.some(session => session._id.equals(sessionId))) {
+            return res.status(400).json({ message: 'You are already enrolled this session' });
         }
         // Add the new session to the enrolledSession array
         user.enrolledSessions.push(sessionId);
@@ -193,3 +197,12 @@ exports.viewPaymentHistory = async (req, res) => {
         return res.status(500).json({ state: 'error', message: err.message })
     }
 }
+// BMI Calculator
+exports.calculateBMI = (req, res) => {
+    const { weight, height } = req.body;
+    // CALCULATE THE BMI
+    const BMI = weight / Math.pow(height, 2);
+    res.status(200).render('memberPages/calculatebmi', { BMI })
+}
+
+// Pages
