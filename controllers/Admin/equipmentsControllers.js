@@ -29,7 +29,14 @@ exports.addEquipment = async (req, res) => {
 // view all Equipments
 exports.viewAllEquipments = async (req, res) => {
     try {
-        const equipments = await Equipment.find({ status: 'available' });
+        const page = parseInt(req.query.page) - 1 || 0;
+        const limit = parseInt(req.query.limit) || 5;
+        const search = req.query.search || ""
+
+        const equipments = await Equipment.find({
+            status: 'available',
+            name: { $regex: search, $options: 'i' }
+        }).skip(page * limit).limit(limit);
         if (equipments.length === 0) return res.status(404).json('No Equipments yet');
         res.status(200).json({ state: 'sucess', data: equipments })
     } catch (err) {
@@ -117,7 +124,15 @@ exports.setEquipmentToAvailable = async (req, res) => {
 // View all maintenance equipments
 exports.viewAllMaintenanceEquipment = async (req, res) => {
     try {
-        const maintenanceEquipments = await Equipment.find({ status: 'maintenance' })
+        const page = parseInt(req.query.page) - 1 || 0;
+        const limit = parseInt(req.query.limit) || 5;
+        const search = req.query.search || ""
+
+        const maintenanceEquipments = await Equipment.find({
+            status: 'maintenance',
+            name: { $regex: search, $options: 'i' }
+        }).skip(page * limit).limit(limit);
+        
         if (maintenanceEquipments.length === 0) return res.status(404).json('No maintenanceEquipments yet');
         res.status(200).json({ state: 'success', data: maintenanceEquipments })
     } catch (err) {

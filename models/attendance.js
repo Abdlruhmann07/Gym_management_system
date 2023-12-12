@@ -9,7 +9,8 @@ const attendanceSchema = new Schema({
     },
     checkInCode: {
         type: Number,
-        unique: true
+        unique: true,
+        required: true,
     },
     checkInTime: {
         type: Date,
@@ -23,7 +24,8 @@ const attendanceSchema = new Schema({
     },
     noOfSessionsLeft: {
         type: Number,
-    }
+    },
+    id: Number,
 }, {
     timestamps: true
 });

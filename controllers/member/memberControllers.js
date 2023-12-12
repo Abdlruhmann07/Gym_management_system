@@ -75,7 +75,21 @@ exports.joinMembershipPlan = async (req, res) => {
 // view all available classes
 exports.ViewAllClasses = async (req, res) => {
     try {
-        const classes = await Class.find({});
+        const page = parseInt(req.query.page) - 1 || 0;
+        const limit = parseInt(req.query.limit) || 5;
+        const search = req.query.search || ""
+        let query = {};
+
+        if (search) {
+            if (!isNaN(search)) {
+                query._id = search;
+            } else {
+                query.name = { $regex: search, $options: 'i' };
+            }
+        }
+        const ClassesCount = await Class.countDocuments(query)
+        const totalPages = Math.ceil(ClassesCount / limit);
+        const classes = await Class.find(query).skip(page * limit).limit(limit);
         if (classes.length < 1) {
             return res.status(404).json({ state: 'error', message: 'No classes yet' });
         }
@@ -135,6 +149,10 @@ exports.rateClass = async (req, res) => {
 // view my classes
 exports.ViewMyClasses = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) - 1 || 0;
+        const limit = parseInt(req.query.limit) || 5;
+        const search = req.query.search || ""
+        const Expression = new RegExp(search, 'i');
         // find the current user
         const CurrentUser = req.user;
         // check if user is member
@@ -142,14 +160,26 @@ exports.ViewMyClasses = async (req, res) => {
         // find all classes for that user
         const user = await User.findOne({ _id: CurrentUser._id }).populate('enrolledSessions');
 
-        let memberSessions = await user.enrolledSessions
-        await Class.populate(memberSessions, { path: 'classTrainer' });
-
+        let memberSessions = user.enrolledSessions
+        console.log(memberSessions);
+        const classTrainer = await Class.populate(memberSessions, { path: 'classTrainer' });
+        // const attendance = await Class.populate(memberSessions, {path: 'attendance'})
+        // search handling
+        if (search) {
+            memberSessions = memberSessions.filter(session => {
+                return (
+                    session.name.match(Expression) ||
+                    session._id && session._id.toString().match(Expression)
+                )
+            })
+        }
+        const totalPages = Math.ceil(memberSessions.length / limit);
+        const paginatedMembers = memberSessions.slice(page * limit, (page + 1) * limit);
         // send it in a response
         if (memberSessions.length < 1) return res.json('No classes joined yet!')
         // return res.status(200).json({ state: 'success', data: userSessions });
         // rendering
-        res.render('memberPages/myClasses', { memberSessions })
+        res.render('memberPages/myClasses', { paginatedMembers, Pages: totalPages })
     } catch (err) {
         return res.status(500).json({ state: 'error', message: err.message });
     }
@@ -170,14 +200,28 @@ exports.viewMySingleClass = async (req, res) => {
 // track my attendance
 exports.viewMyAttendance = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) - 1 || 0;
+        const limit = parseInt(req.query.limit) || 5;
+        const search = req.query.search || ""
+        const Expression = new RegExp(search, 'i');
         // FIND THE CURRENT USER
         const currentUser = req.user
         // FIND THE USER AND POPULATE HIS ATTENDACE RECORDS 
         const member = await User.findOne({ _id: currentUser._id }).populate('attendance');
         // STORE THE ATTENDACE IN A VARIABLE
         const memberAttendance = member.attendance
+        // search handling
+        if (search) {
+            memberAttendance = memberAttendance.filter(attendance => {
+                return (
+                    attendance.id && attendance.id.toString().match(Expression)
+                )
+            })
+        }
+        const totalPages = Math.ceil(memberSessions.length / limit);
+        const paginatedMemberAttendances = memberAttendance.slice(page * limit, (page + 1) * limit);
         // RENDER AND SEND IT IN A RESPONSE
-        res.render('memberPages/myAttendance', { memberAttendance })
+        res.render('memberPages/myAttendance', { paginatedMemberAttendances })
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
     }

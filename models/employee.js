@@ -1,6 +1,11 @@
 const { Schema, model } = require('mongoose')
 const employeeSchema = new Schema({
-    name: {
+    id: Number,
+    firstname: {
+        type: String,
+        required: true
+    },
+    lastname: {
         type: String,
         required: true
     },
@@ -25,6 +30,11 @@ const employeeSchema = new Schema({
 
 }, { timestamps: true });
 
-
+employeeSchema.pre('save', function (next) {
+    if (this.isNew) {
+        this.id = Math.floor(1000 + Math.random() * 9000);
+    }
+    next();
+});
 const Employee = new model('Employee', employeeSchema)
 module.exports = Employee

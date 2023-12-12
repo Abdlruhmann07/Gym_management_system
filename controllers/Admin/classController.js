@@ -31,15 +31,14 @@ exports.getAllClasses = async (req, res) => {
         const search = req.query.search || ""
 
         const classes = await Class.find({
-            $or: [
-                { username: { $regex: search, $options: 'i' } },
-                { _id: search },
-            ]
-        }).skip(page * limit);
+            name: { $regex: search, $options: 'i' },
+        }).skip(page * limit).limit(limit);
+
         if (classes.length === 0) return res.status(404).json('No classes yet');
+
         res.status(200).json({ state: 'success', data: classes });
     } catch (err) {
-        res.state(500).json({ state: 'error', message: err.message });
+        res.status(500).json({ state: 'error', message: err.message });
     }
 };
 // view single class 
@@ -205,12 +204,10 @@ exports.viewAllClassMembers = async (req, res) => {
                 )
             })
         }
-        // console.log(classMembers)
-        // const totalPages = Math.ceil(classMembers.length / limit);
-        // const offset = (page - 1) * limit;
-        // classMembers = classMembers.slice(offset, offset + limit);
-        // console.log(classMembers);
-        res.status(200).json({ members: classMembers });
+        const totalPages = Math.ceil(classMembers.length / limit);
+        const paginatedMembers = classMembers.slice(page * limit, (page + 1) * limit);
+
+        res.status(200).json({ members: paginatedMembers, Pages: totalPages });
     } catch (error) {
         res.status(500).json({ state: 'error', message: error.message });
     }

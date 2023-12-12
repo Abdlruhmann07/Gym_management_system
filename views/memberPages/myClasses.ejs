@@ -10,17 +10,14 @@
 <body>
     <h1>My Classes</h1>
     <ul>
-        <% memberSessions.forEach(function(session) { %>
+        <% paginatedMembers.forEach(function(session) { %>
             <li>
                 <h2><%= session.name %></h2>
                 <p><strong>Description:</strong> <%= session.description %></p>
-                <p><strong>Trainer:</strong> <%= session.classTrainer.username %></p>
+                <p><strong>Trainer:</strong> <%= session.classTrainer ? session.classTrainer.username : 'No trainer assigned yet' %></p>
                 <p><strong>Price:</strong> <%= session.price %></p>
                 <p><strong>Number of Sessions:</strong> <%= session.noOfSessions %></p>
-                <p><strong>Attendance:</strong> 
-                <% session.attendace.forEach(function(attendance) { %>
-                    <%= attendance.date %> <!-- Assuming date is a field in the Attendance model -->
-                <% }); %>
+                <p><strong>pages:<%=Pages%></strong> 
                 </p>
                 <p><strong>Members:</strong> 
                 <% session.members.forEach(function(member) { %>

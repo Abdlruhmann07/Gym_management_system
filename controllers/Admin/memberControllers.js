@@ -19,15 +19,23 @@ exports.getAllMembers = async (req, res) => {
         const limit = parseInt(req.query.limit) || 5;
         const search = req.query.search || ""
 
-        const members = await User.find({
+        let query = {
             role: 'member',
-            $or: [
-                { username: { $regex: search, $options: 'i' } },
-                { checkInCode: search }
-            ]
-        }).skip(page * limit).limit(limit);
+        }
+        if (search) {
+            if (!isNaN(search)) {
+                query.checkInCode = search; 
+            } else {
+                query.username = { $regex: search, $options: 'i' }; 
+            }
+        }
+        const membersCount = await User.countDocuments(query)
+        const totalPages = Math.ceil(membersCount / limit);
+        const members = await User.find(query).skip(page * limit).limit(limit);
+
         if (members.length < 1) return res.status(404).send('No Members Yet!')
-        res.status(200).json({ state: 'success', data: members })
+
+        res.status(200).json({ state: 'success', data: members , pages: totalPages , count:membersCount});
     } catch (err) {
         res.status(500).json({ state: 'error viewing members', message: err.message })
     }

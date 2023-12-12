@@ -38,10 +38,27 @@ exports.addTrainer = async (req, res) => {
 // View all trainers
 exports.getAllTrainers = async (req, res) => {
     try {
-        const trainers = await User.find({
+        const page = parseInt(req.query.page) - 1 || 0;
+        const limit = parseInt(req.query.limit) || 5;
+        const search = req.query.search || ""
+
+        let query = {
             role: 'trainer',
-        });
-        res.status(200).json({ state: 'success', data: trainers })
+        }
+        if (search) {
+            if (!isNaN(search)) {
+                query.checkInCode = search; // Treat as number if search is a number
+            } else {
+                query.username = { $regex: search, $options: 'i' }; // Treat as string for username search
+            }
+        }
+        const trainersCount = await User.countDocuments(query)
+        const totalPages = Math.ceil(trainersCount / limit);
+        const trainers = await User.find(query).skip(page * limit).limit(limit);
+
+        if (trainers.length === 0) return res.status(404).json('No Trainers Yet!')
+
+        res.status(200).json({ state: 'success', data: trainers, Pages: totalPages, count: trainersCount })
     } catch (err) {
         res.status(500).json({ state: 'error viewing trainers', message: err.message })
     }
@@ -88,6 +105,6 @@ exports.deleteTrainer = async (req, res) => {
     }
 }
 // assign trainer to class
-exports.assignTrainerToClass = async (req , res) => {
-    
+exports.assignTrainerToClass = async (req, res) => {
+
 };

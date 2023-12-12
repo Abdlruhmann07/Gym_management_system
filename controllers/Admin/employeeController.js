@@ -1,16 +1,23 @@
 const Employee = require('../../models/employee');
-const signToken = require('../../helpers/signtoken');
-const User = require('../../models/user');
+
 // employee 
+
 // add new employee
 exports.addEmployee = async (req, res) => {
     try {
         const {
-            name, age, address, phone, payroll, photo
+            firstname, lastname, age, address, phone, payroll, photo,
         } = req.body;
-        const employee = await Employee.create({
-            name, age, address, phone, payroll, photo
-        })
+        const employee = new Employee({
+            firstname,
+            lastname,
+            age,
+            address,
+            phone,
+            payroll,
+            photo
+        });
+        await employee.save();
         res.status(200).json({ state: 'success', data: employee });
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
@@ -19,9 +26,24 @@ exports.addEmployee = async (req, res) => {
 // view all employees
 exports.viewAllEmployees = async (req, res) => {
     try {
-        const employees = await Employee.find({});
+        const page = parseInt(req.query.page) - 1 || 0;
+        const limit = parseInt(req.query.limit) || 5;
+        const search = req.query.search || ""
+        let query = {};
+        if (search) {
+            if (!isNaN(search)) {
+                query.id = search;
+            } else {
+                query.firstname = { $regex: search, $options: 'i' };
+            }
+        }
+        const employeesCount = await Employee.countDocuments(query)
+        const totalPages = Math.ceil(employeesCount / limit);
+        const employees = await Employee.find(query).skip(page * limit).limit(limit);
+
         if (employees.length === 0) return res.status(404).json('No employees yet');
-        res.status(200).json({ state: 'success', data: employees });
+
+        res.status(200).json({ state: 'success', data: employees, pages: totalPages, count: employeesCount });
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
     }
@@ -59,7 +81,7 @@ exports.deleteEmployee = async (req, res) => {
             return res.status(404).json({ state: 'error', message: 'No employees to delete' })
         }
         const deletedEmployee = await Employee.findByIdAndDelete(id);
-        if (!deletedEmployee)  {
+        if (!deletedEmployee) {
             return res.status(404).json({ state: 'error', message: 'No Employee Found with this id' });
         }
         res.status(200).json({ state: 'success', deleted: deletedEmployee });
