@@ -1,0 +1,159 @@
+/* ! Start Global Rules */
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    background-image: url(/img/main/gym.jpg);
+    /* background-image: radial-gradient(circle at top left, #bdc3c7, #2c3e50); */
+    /* background-image: radial-gradient(circle at top left,#232526, #414345); */
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+}
+
+/* @media (max-width:768px){
+    html{
+        background-image: radial-gradient(circle at top left,#757575, #414345);
+    }
+    html::before{
+        background: rgba(0, 0, 0, 0);
+    }
+} */
+
+html::before {
+    content: "";
+    background: rgba(0, 0, 0, 0.8);
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* ! END Global Rules */
+
+
+.login {
+    background-color: rgba(50, 50, 50, 0.56);
+    box-shadow: 0 0 10px 0 #000000;
+    max-width: 400px;
+    z-index: 100;
+}
+
+.login>h1 {
+    color: white;
+    margin-top: 20px;
+    margin-left: 10px;
+    position: relative;
+    text-align: center;
+}
+
+
+.login>.container form {
+    padding: 20px;
+    /* display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(300px,1fr)); */
+    gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    height: fit-content;
+    /* width: 600px; */
+}
+
+
+.login>.container form .content label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    color: white;
+}
+
+.login>.container form .content input {
+    padding: 12px;
+    width: 300px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    background-color: #333;
+    color: white;
+}
+
+/*! NOT WORKING
+/* input:autofill {
+    border: 1px solid #333;
+    background-color: #333;
+    color: white;
+} */
+
+.login>.container form .content input:focus {
+    outline: none;
+}
+
+.login>.container form .content input::placeholder {
+    transition: opacity 0.4s;
+}
+
+.login>.container form .content input:focus::placeholder {
+    opacity: 0;
+}
+
+.login>.container form input[type="submit"] {
+    display: block;
+    padding: 10px 80px;
+    background-color: rgba(50, 50, 50, 0.56);
+    border: 0px solid #757575;
+    color: white;
+    font-size: 18px;
+    /* border: none; */
+    border-radius: 8px;
+    text-align: center;
+    transition: 0.4s;
+    z-index: 1;
+    position: relative;
+}
+
+.login>.container form input[type="submit"]:hover {
+    background-color: #333;
+}
+
+
+.forget {
+    text-align: center;
+}
+
+.forget span {
+    display: block;
+    color: white;
+}
+
+.forget a {
+    margin-top: 10px;
+    color: #757575;
+}

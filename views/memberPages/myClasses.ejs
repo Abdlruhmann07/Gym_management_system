@@ -9,28 +9,19 @@
 </head>
 <body>
     <h1>My Classes</h1>
-    <ul>
-        <% paginatedMembers.forEach(function(session) { %>
-            <li>
-                <h2><%= session.name %></h2>
-                <p><strong>Description:</strong> <%= session.description %></p>
-                <p><strong>Trainer:</strong> <%= session.classTrainer ? session.classTrainer.username : 'No trainer assigned yet' %></p>
-                <p><strong>Price:</strong> <%= session.price %></p>
-                <p><strong>Number of Sessions:</strong> <%= session.noOfSessions %></p>
-                <p><strong>pages:<%=Pages%></strong> 
-                </p>
-                <p><strong>Members:</strong> 
-                <% session.members.forEach(function(member) { %>
-                    <%= member.name %> <!-- Assuming name is a field in the User model -->
-                <% }); %>
-                </p>
-                <p><strong>Rating:</strong> 
-                <% session.rate.forEach(function(rating) { %>
-                    <%= rating.user.name %>: <%= rating.rating %> <!-- Assuming name and rating are fields in the User and Rating models respectively -->
-                <% }); %>
-                </p>
-            </li>
-        <% }); %>
-    </ul>
+    <% paginatedMembers.forEach(function(session) { %>
+      
+            <div class="session">
+               
+                    <%= session.name %>
+                    <h2><%= session._id %></h2>
+                
+           
+            <form action="/api/v1/member/my-classes/unEnroll-session/<%=session._id%>" method="post">
+                <button type="submit">Un Enroll</button>
+            </form>
+        </div>
+            <% }); %>
+            
 </body>
 </html>

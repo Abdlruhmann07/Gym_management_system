@@ -6,16 +6,19 @@ const path = require('path');
 const app = express();
 
 // using middleware
+app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.set('view engine', 'ejs');
-app.set('')
+app.set()
 // mounting routes
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/Admin/index');
 const memberRoutes = require('./routes/memberRoutes');
+const attendanceRoutes = require('./routes/attendance');
 app.use('/api/v1', authRoutes);
+app.use('/api/v1', attendanceRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/member', memberRoutes);
 //End

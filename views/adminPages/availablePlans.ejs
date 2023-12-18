@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Members List</title>
+    <style>
+        .session {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Availible Plans</h1>
+    <div id="membersList">
+        <% memberships.forEach(plan => { %>
+            <div class="session">
+                <h3><%= plan.name %></h3>
+                <h3><%= plan.price %></h3>
+                <form action="/api/v1/admin/members/<%=memberId%>/<%=plan._id%>/sign-member-to-plan" method="post">
+                    <input type="hidden" name="planId" value="<%= plan._id %>">
+                    <input type="submit" value="Select">
+                </form>
+            </div>
+            <% }); %>
+        </div>
+</body>
+</html>

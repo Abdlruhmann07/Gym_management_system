@@ -9,10 +9,34 @@ const signToken = require('../helpers/signtoken');
 // const clientUrl = ``
 // signup users
 exports.signup = async (req, res) => {
-    console.log(req.body);
+    const {
+        firstname,
+        lastname,
+        username,
+        email,
+        password,
+        confirmPassword,
+        phonenumber,
+        bfd,
+        city,
+        st,
+    } = req.body;
     try {
         const newUser = await User.create(
-            req.body,
+            {
+                firstname,
+                lastname,
+                username,
+                email,
+                password,
+                confirmPassword,
+                phonenumber,
+                bfd,
+                address: {
+                    city: city,
+                    st: st
+                }
+            }
         )
         const token = signToken(newUser);
         // res.status(201).json({ message: 'Successful Register',token , user: newUser });

@@ -9,6 +9,10 @@ const paymentSchema = new Schema({
         type: Number,
         required: true,
     },
+    paymentType: {
+        type: String,
+        required: true,
+    },
     paymentDate: {
         type: Date,
         default: Date.now(),

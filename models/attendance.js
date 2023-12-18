@@ -9,7 +9,6 @@ const attendanceSchema = new Schema({
     },
     checkInCode: {
         type: Number,
-        unique: true,
         required: true,
     },
     checkInTime: {

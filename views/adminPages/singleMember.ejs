@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Members List</title>
+    <style>
+        .member {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Members List</h1>
+    <div id="membersList">
+            <div class="member">
+                <h3><%= member.username %></h3>
+                <p><%= member.checkInCode %></p>
+                <form action="/api/v1/admin/members/<%=member._id%>/available-sessions" method="get">
+                    <input type="hidden" name="memberId" value="<%= member._id %>">
+                    <input type="submit" value="assign to class" >
+                </form>
+                <form action="/api/v1/admin/members/<%=member._id%>/available-plans" method="get">
+                    <input type="hidden" name="memberId" value="<%= member._id %>">
+                    <input type="submit" value="assign to plan" >
+                </form>
+                <form action="/api/v1/admin/members/<%=member._id%>/view-member-attendance" method="get">
+                    <!-- <input type="hidden" name="id" value="<%= member._id %>"> -->
+                    <input type="submit" value="view attendance" >
+                </form>
+            </div>
+    </div>
+</body>
+</html>

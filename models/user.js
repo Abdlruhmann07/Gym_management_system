@@ -37,7 +37,7 @@ const userSchema = new Schema({
         required: [true, 'Passowrd is Required'],
         minlength: [8, 'Too Short Passowrd'],
     },// required
-    confirmpassword: {
+    confirmPassword: {
         type: String,
         required: [true, 'Please confirm your password'],
         // This validation works for save() and create()
@@ -59,9 +59,10 @@ const userSchema = new Schema({
         city: {
             type: String,
         },
-        country: {
-            type: String,
-        },
+    },
+    bfd: {
+        type: Date,
+        default: Date.now()
     },
     authToken: {
         type: String,

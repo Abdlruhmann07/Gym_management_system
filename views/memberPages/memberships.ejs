@@ -14,7 +14,7 @@
             <li>
                 <strong><%= plan.name %></strong> - <%= plan.description %> - Price: <%= plan.price %>
                 <form action="/api/v1/member/memberships/join-plan/<%= plan._id %>" method="post">
-                    <input type="hidden" name="method" value="creditCard"> <!-- Example payment method -->
+                    <input type="hidden" name="method" value="visa"> <!-- Example payment method -->
                     <button type="submit">Join</button>
                 </form>
             </li>

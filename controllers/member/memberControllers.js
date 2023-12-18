@@ -2,7 +2,7 @@ const Membership = require('../../models/membership')
 const Class = require('../../models/class')
 const User = require('../../models/user');
 const Payment = require('../../models/payment');
-const axios = require('axios');
+const finincialReport = require('../../models/finincialReport');
 
 // helpers
 const generateTransactionId = require('../../helpers/generateTransactionId');
@@ -37,34 +37,47 @@ exports.getSingleMembership = async (req, res) => {
 // join chosen membership CHECK
 exports.joinMembershipPlan = async (req, res) => {
     const user = req.user;
-    console.log(user);
     // find the selected membership
     try {
         const planId = req.params.id;
         const selectedPlan = await Membership.findById(planId);
         if (!selectedPlan) return res.status(404).json({ message: 'No Plan found' })
+        console.log(selectedPlan);
         //! payment progress
-        // let userPayment ;
-        // try {
-        //     userPayment = new Payment({
-        //         user: user._id,
-        //         price: selectedPlan.price,
-        //         paymentMethod: req.body.method,
-        //         transactionId: generateTransactionId(),
-        //         description: selectedPlan.description,
-        //         status: 'completed'
-        //     })
-        //     await userPayment.save();
-        //     user.payments.push(userPayment._id)
-        // } catch (err) {
-        //     userPayment.status = 'failed'
-        //     return res.status(400).json({ state: 'error', message: 'error creating payment', content: err.message })
-        // }
+        let userPayment;
+        try {
+            userPayment = new Payment({
+                user: user._id,
+                paymentType: 'membershipPlan',
+                price: selectedPlan.price,
+                paymentMethod: req.body.method,
+                transactionId: generateTransactionId(),
+                description: selectedPlan.description,
+                status: 'completed'
+            })
+            await userPayment.save();
+            user.payments.push(userPayment._id)
+        } catch (err) {
+            return res.status(400).json({ state: 'error', message: 'error creating payment', content: err.message })
+        }
         //!
+        //! add the revnue of this payment
+        const finincial = new finincialReport({
+            revenue: selectedPlan.price,
+            category: 'membershipPlan',
+            planType: selectedPlan.package
+        })
+        await finincial.save();
         // add it's id to the user property membershiPlan
         user.membershipPlan = selectedPlan._id;
+        const userPlan = await User.findById(user._id).populate('membershipPlan');
         //save user
         await user.save({ validateBeforeSave: false });
+        return res.status(200)
+            .json({
+                state: 'success', plan: userPlan.name,
+                payment: userPayment.transactionId
+            });
 
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message })
@@ -110,13 +123,64 @@ exports.joinClass = async (req, res) => {
         if (user.enrolledSessions.some(session => session._id.equals(sessionId))) {
             return res.status(400).json({ message: 'You are already enrolled this session' });
         }
+        // find the selected class
+        const session = await Class.findById(sessionId)
+        if (!session) return res.status(404).json({ state: 'error', message: 'No class found' })
+        //! payment progress
+        let userPayment;
+        try {
+            userPayment = new Payment({
+                user: user._id,
+                paymentType: 'Class Registration',
+                price: session.price,
+                paymentMethod: req.body.method,
+                transactionId: generateTransactionId(),
+                description: session.description,
+                status: 'completed'
+            })
+            await userPayment.save();
+            user.payments.push(userPayment._id)
+        } catch (err) {
+            return res.status(400).json({ state: 'error', message: 'error creating payment', content: err.message })
+        }
+        //!
+        //! add the revnue of this payment
+        const finicialReport = new finincialReport({
+            revenue: session.price,
+            category: 'Class Registration',
+            classId: session._id,
+            paymentId: userPayment._id,
+        })
+        await finicialReport.save();
         // Add the new session to the enrolledSession array
         user.enrolledSessions.push(sessionId);
         // Save the updated user object back to the database
         await user.save({ validateBeforeSave: false });
+        // add the user to the class members array
+        session.members.push(user._id);
+        // save the updated session object back to the database
+        await session.save({ validateBeforeSave: false });
         res.status(200).json({ state: 'success', message: 'Session saved successfully' });
     } catch (err) {
         return res.status(500).json({ state: 'error', message: err.message })
+    }
+}
+// unEnroll session
+exports.unEnrollClass = async (req, res) => {
+    try {
+        const user = req.user
+        const sessionId = req.params.id;
+        const session = await Class.findById(sessionId);
+        if (!session) return res.status(404).json({ message: 'Session not found' });
+        // remove 
+        await User.updateOne({ email: user.email },
+            { $pull: { enrolledSessions: sessionId } });
+        // remove
+        await Class.updateOne({ _id: sessionId },
+            { $pull: { members: user._id } });
+        return res.status(200).json({ state: 'succecss', message: 'Unenrolled' });
+    } catch (err) {
+        return res.status(500).json({ state: 'error', message: err.message });
     }
 }
 // rate class
@@ -161,7 +225,7 @@ exports.ViewMyClasses = async (req, res) => {
         const user = await User.findOne({ _id: CurrentUser._id }).populate('enrolledSessions');
 
         let memberSessions = user.enrolledSessions
-        console.log(memberSessions);
+        // console.log(memberSessions);
         const classTrainer = await Class.populate(memberSessions, { path: 'classTrainer' });
         // const attendance = await Class.populate(memberSessions, {path: 'attendance'})
         // search handling
@@ -175,8 +239,9 @@ exports.ViewMyClasses = async (req, res) => {
         }
         const totalPages = Math.ceil(memberSessions.length / limit);
         const paginatedMembers = memberSessions.slice(page * limit, (page + 1) * limit);
+        // console.log(paginatedMembers)
         // send it in a response
-        if (memberSessions.length < 1) return res.json('No classes joined yet!')
+        if (paginatedMembers.length < 1) return res.json('No classes joined yet!')
         // return res.status(200).json({ state: 'success', data: userSessions });
         // rendering
         res.render('memberPages/myClasses', { paginatedMembers, Pages: totalPages })

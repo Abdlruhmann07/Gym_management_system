@@ -1,4 +1,5 @@
 const Equipment = require('../../models/equipment')
+const finincialReport = require('../../models/finincialReport')
 // Add new Equipment
 exports.addEquipment = async (req, res) => {
     const { name, description, price, quantity, status, brand } = req.body;
@@ -8,6 +9,14 @@ exports.addEquipment = async (req, res) => {
         if (existingEquipment) {
             existingEquipment.quantity += quantity;
             await existingEquipment.save();
+            //
+            const finincial = new finincialReport({
+                expenses: quantity * existingEquipment.price,
+                category: 'Equipment',
+                equipmentId: existingEquipment._id,
+            })
+            await finincial.save();
+            //
             return res.status(200).json({ state: 'success', data: existingEquipment });
         } else {
             const newEquipment = await Equipment.create({
@@ -18,9 +27,14 @@ exports.addEquipment = async (req, res) => {
                 status,
                 brand
             });
+            const finincial = new finincialReport({
+                expenses: newEquipment.quantity * existingEquipment.price,
+                category: 'Equipment',
+                equipmentId: existingEquipment._id,
+            })
+            await finincial.save()
             res.status(200).json({ state: 'success', data: newEquipment });
         }
-
     } catch (err) {
         res.status(500).json({ state: "error", message: err.message });
     }
@@ -86,7 +100,6 @@ exports.deleteEquipment = async (req, res) => {
 };
 
 // set equipment to maintenance
-
 exports.setEquipmentToMaintenance = async (req, res) => {
     try {
         const id = req.params.id;
@@ -132,8 +145,8 @@ exports.viewAllMaintenanceEquipment = async (req, res) => {
             status: 'maintenance',
             name: { $regex: search, $options: 'i' }
         }).skip(page * limit).limit(limit);
-        
-        if (maintenanceEquipments.length === 0) return res.status(404).json('No maintenanceEquipments yet');
+
+        if (maintenanceEquipments.length === 0) return res.status(404).json('No maintenance Equipments yet');
         res.status(200).json({ state: 'success', data: maintenanceEquipments })
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });

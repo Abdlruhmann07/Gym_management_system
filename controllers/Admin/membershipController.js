@@ -3,7 +3,6 @@ const Membership = require('../../models/membership');
 // Add new membership  POST , PRIVATE
 exports.addMemberShip = async (req, res) => {
     try {
-        console.log(req.body)
         const { membershipTitle, description, price, package, features } = req.body;
         const newMembership = await Membership.create({
             membershipTitle,

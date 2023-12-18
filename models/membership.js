@@ -13,9 +13,9 @@ const membershipSchema = new Schema({
         required: true
     },
     package: {
-        type: String, 
+        type: String,
         required: true,
-        enum: ['monthly', 'yearly']
+        enum: ['gold', 'platinum', 'silver'],
     },
     features: {
         type: [String],
