@@ -12,11 +12,14 @@ const { addMember,
     asignMemberToClass,
     viewAvailableClassesToJoin,
     viewAvailablePlans,
-    } = require('../../controllers/Admin/memberControllers');
+} = require('../../controllers/Admin/memberControllers');
 const { authenticate, authorize } = require('../../middlewares/auth');
+const { uploadPhoto } = require('../../controllers/authControllers');
+
 router.get('/', getAllMembers) // tested
+router.get('/addmember', authenticate, getaddMember)
 router.get('/:id', authenticate, viewSingleMember) //tested
-router.post('/addmember', authenticate, authorize('admin'), addMember) //tested
+router.post('/addmember', authenticate, uploadPhoto, addMember) //tested
 router.delete('/:id', deleteMember) // tested
 router.put('/:id', updateSingleMember) // tested
 router.get('/:id/view-member-attendance', viewMemberAttendance) // 
@@ -27,5 +30,4 @@ router.post('/:memberId/:sessionId/sign-member-to-class', asignMemberToClass) //
 router.get('/:id/view-member-attendance', viewMemberAttendance)
 
 // get pages
-router.get('/addmember', authenticate, getaddMember)
 module.exports = router;

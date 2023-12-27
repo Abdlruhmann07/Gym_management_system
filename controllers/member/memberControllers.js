@@ -3,6 +3,8 @@ const Class = require('../../models/class')
 const User = require('../../models/user');
 const Payment = require('../../models/payment');
 const finincialReport = require('../../models/finincialReport');
+const Product = require('../../models/product');
+const orderModel = require('../../models/order');
 
 // helpers
 const generateTransactionId = require('../../helpers/generateTransactionId');
@@ -313,5 +315,141 @@ exports.calculateBMI = (req, res) => {
     const BMI = weight / Math.pow(height, 2);
     res.status(200).render('memberPages/calculatebmi', { BMI })
 }
+// member update himself
+exports.updateMe = async (req, res) => {
+
+}
+// view store products
+exports.getAllProducts = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) - 1 || 0;
+        const limit = parseInt(req.query.limit) || 5;
+        const search = req.query.search || ""
+
+        const products = await Product.find({
+            status: 'available',
+            $or: [
+                { title: { $regex: search, $options: 'i' } },
+                { id: parseInt(search) || 0 }
+            ],
+        }).skip(page * limit).limit(limit);
+        if (products.length === 0) return res.status(404).json('No products yet');
+        // res.status(200).json({ state: 'sucess', data: products })
+        res.render('memberPages/products', { products: products })
+    } catch (err) {
+        res.status(500).json({ state: "error", message: err.message });
+    }
+} //! DONE!
+// view single product
+exports.getSingleProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const singleProduct = await Product.findById(productId);
+        if (!singleProduct) return res.status(404).json({ state: "error", message: 'Product not found' })
+        return res.status(404).json({ state: "success", data: singleProduct });
+    } catch (err) {
+        return res.status(500).json({ state: "error", message: err.message });
+    }
+} //! DONE!
+// add product to cart
+exports.addProductToCart = async (req, res) => {
+    try {
+        // get the current user
+        const user = req.user;
+        // get the selected product
+        const productId = req.params.productId;
+        const product = await Product.findById(productId);
+        // check if the product is already in user's cart
+        const productIndex = user.cart.items.findIndex(item => item.productId === productId)
+        // if the product is exists increment the quantity
+        if (productIndex !== -1) {
+            user.cart.items[productIndex].quantity += 1;
+        } else {
+            // add new one
+            // push the product to user's cart
+            user.cart.items.push({
+                productId,
+                quantity: 1,
+                price: product.price
+            })
+        }
+        // save the user
+        const response = await user.save({ validateBeforeSave: false });
+        // send a response
+        return res.status(200).json({
+            status: 'success',
+            response: response
+        });
+        // catch potiential errors
+    } catch (err) {
+        return res.status(500).json({ status: 'fail', message: err.message });
+    }
+}
+// get my cart
+exports.getmyCart = async (req, res) => {
+    try {
+        // get the current user
+        const user = req.user;
+        // store the cart items
+        const cartItems = user.cart.items;
+        // send it in a response
+        res.status(201).render('memberPages/myCart', { cartItems: cartItems });
+        // catch potiential errors
+    } catch (err) {
+        return res.status(500).json({
+            status: 'fail',
+            message: err.message
+        })
+    }
+}
+// delete product from cart
+exports.deleteproductFromCart = async (req, res) => {
+    try {
+        const user = req.user;
+        const productId = req.params.productId;
+        if (productId) {
+            const updatedCart = await User.updateOne(
+                { _id: user._id },
+                { $pull: { "cart.items": { productId: itemIdAsObjectId } } }
+            )
+            res.status(200).json({ status: 'deleted the selected product', data: updatedCart })
+        } else {
+            const updatedCart = await User.updateOne(
+                { _id: user._id },
+                { $set: { cart: { items: [] } } }
+            )
+            res.status(200).json({ status: 'deleted all', data: updatedCart })
+        }
+    } catch (err) {
+        res.status(200).json(err.message)
+    }
+}
+// make an order
+exports.createOrder = async (req, res) => {
+    try {
+        const user = req.user;
+        const cartItems = user.cart.items
+        const newOrder = new orderModel({
+            items: cartItems,
+            user: {
+                _id: user._id,
+                username: user.username,
+                email: user.email
+            }
+        })
+        const savedOrder = await newOrder.save();
+        return res.status(200).json({
+            status: 'success',
+            data: savedOrder
+        });
+    } catch (err) {
+        return res.status(500).json({
+            status: 'fail',
+            message: err.message
+        })
+    }
+} // complete
+
+
 
 // Pages

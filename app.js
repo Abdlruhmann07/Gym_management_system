@@ -11,7 +11,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.set('view engine', 'ejs');
-app.set()
 // mounting routes
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/Admin/index');

@@ -61,7 +61,7 @@
 </head>
 <body>
     <h1>Signup</h1>
-    <form action="/api/admin/members/addmember" method="post">
+    <form action="/api/v1/admin/members/addmember" method="post" enctype="multipart/form-data">
         <!-- Add your form fields here -->
         <label for="firstname">First Name:</label>
         <input type="text" name="firstname" required>
@@ -83,13 +83,14 @@
         <input type="password" name="password" required>
         <br>
 
-        <label for="confirmpassword">Confirm Password:</label>
-        <input type="password" name="confirmpassword" required>
+        <label for="confirmPassword">Confirm Password:</label>
+        <input type="password" name="confirmPassword" required>
         <br>
 
         <label for="phonenumber">Phone Number:</label>
         <input type="text" name="phonenumber" required>
         <br>
+        <input type="file" name="photo" accept="image/*">
 
         <button type="submit">Signup</button>
     </form>

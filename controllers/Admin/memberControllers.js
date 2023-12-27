@@ -10,8 +10,12 @@ const generateTransactionId = require('../../helpers/generateTransactionId');
 // Add new member 
 exports.addMember = async (req, res) => {
     try {
+        const myObj = req.body
+        const file = req.file
+        if (file) {
+            myObj.photo = file.filename;
+        }
         const newMember = await User.create(req.body);
-        console.log('member created', newMember)
         res.status(200).json({ message: 'Member created', data: newMember })
     } catch (err) {
         console.log('error creating member', err.message)
@@ -102,8 +106,8 @@ exports.viewMemberAttendance = async (req, res) => {
         const member = await User.findById(userId).populate('attendance');
         // STORE THE ATTENDACE IN A VARIABLE
         const memberAttendance = member.attendance
-        if(!memberAttendance || memberAttendance.length === 0) {
-            return res.status(404).json({ message: 'No Attendance yet!'})
+        if (!memberAttendance || memberAttendance.length === 0) {
+            return res.status(404).json({ message: 'No Attendance yet!' })
         }
         // search handling
         if (search) {
@@ -116,7 +120,7 @@ exports.viewMemberAttendance = async (req, res) => {
         const totalPages = Math.ceil(memberAttendance.length / limit);
         const paginatedMemberAttendances = memberAttendance.slice(page * limit, (page + 1) * limit);
         // RENDER AND SEND IT IN A RESPONSE
-        res.render('adminPages/memberAttendance', { paginatedMemberAttendances , member })
+        res.render('adminPages/memberAttendance', { paginatedMemberAttendances, member })
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
     }

@@ -110,6 +110,15 @@ const userSchema = new Schema({
             index: true
         }
     ],
+    cart: {
+        items: [
+            {
+                productId: mongoose.Types.ObjectId,
+                quantity: Number,
+                price: Number,
+            },
+        ],
+    },
     checkInCode: {
         type: Number,
         unique: true
@@ -119,7 +128,10 @@ const userSchema = new Schema({
         enum: ["member", "admin", "trainer"],
         default: "member",
     },
-    photo: String,
+    photo: {
+        type: String,
+        default: 'default.jpg'
+    },
     // passwordResetToken: String,
     // passwordResetTokenExpires: Date,
     otp: String,

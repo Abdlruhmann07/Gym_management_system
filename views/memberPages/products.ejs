@@ -1,0 +1,27 @@
+
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Viewer</title>
+</head>
+<body>
+    <h1>Available Sessions</h1>
+    <ul>
+        <% products.forEach(function(product) { %>
+            <<div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title"><%= product.title %></h5>
+                  <p class="card-text"><%= product.description %></p>
+                  <form action="/api/v1/member/store/addtocart/<%=product._id%>" method="post">
+                      <input type="hidden" name="productId" value="<%=product._id%>" >
+                      <button type="submit">Join</button>                
+                      </form>
+                </div>
+              </div>
+        <% }); %>
+    </ul>
+</body>
+</html>

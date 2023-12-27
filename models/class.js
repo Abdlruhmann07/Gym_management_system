@@ -61,6 +61,7 @@ const classSchema = new Schema({
         }
     ],
     averageRating: Number,
+    photo: String,
 });
 
 const Class = new model('Class', classSchema);

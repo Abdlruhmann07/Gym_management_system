@@ -1,7 +1,5 @@
 const User = require('../models/user');
-const Token = require('../models/token');
 const sendEmail = require('../helpers/sendmail');
-const crypto = require('crypto');
 const multer = require('multer');
 
 // signing tokens function
@@ -51,38 +49,13 @@ exports.signup = async (req, res) => {
         })
     }
 };
-// signup trainer
-// exports.signupTrainer = async (req, res) => {
-//     // console.log(req.body);
-//     try {
-//         const {
-//             email, password, name, age, address, phone, payroll, photo, Classes
-//         } = req.body;
-//         const newTrainer = await Employee.create(
-//             {
-//                 email, password, name, age, address, phone, payroll, photo, Classes, role: 'Trainer',
-//             }
-//         )
-//         const token = signToken(newTrainer);
-//         // res.
-//         res.cookie('token', token, {
-//             httpOnly: true,
-//         }).status(201).json({ message: 'Successful Register', token, employoee: newTrainer });
-//         // res.redirect('/')
-//     } catch (err) {
-//         res.status(500).json({
-//             status: 'failed',
-//             message: err.message,
-//         })
-//     }
-// };
 // login users
 exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
         console.log(req.body);// comment me
         if (!email || !password) {
-            res.status(400).send({ message: 'please fill email and password to login' });
+            res.status(400).josn({ message: 'please fill email and password to login' });
         }
         // check if user is exist with that email
         const user = await User.findOne({ email }).select('+password');
@@ -90,7 +63,7 @@ exports.login = async (req, res, next) => {
         const isMatch = await user.compareHashedPassword(password, user.password);
         //check if user exists and password matches
         if (!user || !isMatch) {
-            res.status(400).send({ message: 'incorrect email or password' });
+            return res.status(400).json({ message: 'incorrect email or password' });
         }
         const token = signToken(user);
         // sending the token to client in a cookie
@@ -112,13 +85,11 @@ exports.login = async (req, res, next) => {
         res.status(500).json({ state: 'error', message: err.message });
     }
 }
-
 // logout users
 exports.logout = (req, res) => {
     res.cookie('token', '', { maxAge: 1 });
     res.redirect('/api/v1/login');
 }
-
 // forgett password
 exports.forgettPassword = async (req, res, next) => {
     //1 GET USER BASED ON POSTED EMAIL 
@@ -141,9 +112,10 @@ exports.forgettPassword = async (req, res, next) => {
                 subject: 'Password change request',
                 message: message
             });
-            res.status(200).json({
-                state: 'success', message: 'password reset link sent to user email successfully'
-            });
+            // res.status(200).json({
+            //     state: 'success', message: 'password reset link sent to user email successfully'
+            // });
+            res.status(200).render('verifyotp')
         } catch (err) {
             user.otp = undefined;
             user.otpExpires = undefined;
@@ -154,10 +126,10 @@ exports.forgettPassword = async (req, res, next) => {
     }
 };
 // reset password
-exports.resetPassword = async (req, res) => {
+exports.verifyotp = async (req, res) => {
     try {
         // CHECK IF TOKEN EXISTS OR NOT EXPIRED
-        const otp = req.params.otp
+        const otp = req.body.otp;
         console.log(typeof otp)
         // const hashedToken = crypto
         //     .createHash('sha256')
@@ -166,36 +138,46 @@ exports.resetPassword = async (req, res) => {
         // console.log(hashedToken)
         // find the user by the token
         const user = await User.findOne({
-            otp: req.params.otp,
+            otp: otp,
             otpExpires: {
                 $gt: Date.now()
             }
         })
-        console.log(user)
+        // console.log(user)
         if (!user) {
             return res.status(400).json({ state: 'error', message: 'request link has expired' });
+        } else {
+            res.render('setNewPassword', { otp, user });
         }
-        // RESETING USER PASSWORD
-        const { password, confirmPassword } = req.body;
-        user.password = password
-        user.confirmPassword = confirmPassword
-        user.otp = undefined;
-        user.otpExpires = undefined;
-        user.passwordChangedAt = Date.now();
-        await user.save();
-        // send response to the client 
-        // TODO: login the user
-        res.status(200).json({ state: 'success', data: user });
+
     } catch (err) {
         return res.status(500).json({ state: 'error', message: err.message })
     }
 }
-
+exports.setNewPassword = async (req, res) => {
+    const userId = req.params.id
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ state: 'error', message: 'user not found' });
+    // RESETING USER PASSWORD
+    const { password, confirmPassword } = req.body;
+    user.password = password
+    user.confirmPassword = confirmPassword
+    user.otp = undefined;
+    user.otpExpires = undefined;
+    user.passwordChangedAt = Date.now();
+    await user.save();
+    // send response to the client 
+    // TODO: login the user
+    res.status(200).json({ state: 'success', data: user });
+}
 // Pages GET PUBLICE
 
 // get login page
 exports.getLogin = (req, res) => {
     res.render('login');
+}
+exports.getforgettPassword = (req, res) => {
+    res.render('forgettpassword');
 }
 
 //get signup page
@@ -234,6 +216,10 @@ exports.getUploadpage = (req, res) => {
 }
 exports.Upload = (req, res) => {
     const file = req.file
-    console.log(file)
-    console.log(req.body)
+    if (file) {
+        console.log(file)
+        console.log(req.body)
+        console.log(file.filename)
+    }
+
 }
