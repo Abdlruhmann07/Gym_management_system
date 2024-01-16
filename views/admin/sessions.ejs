@@ -538,14 +538,19 @@
         });
       })();
       const createSession = () => {
+        const current = new Date();
+        let start = document.getElementById("start").value.split(':');
+        let end = document.getElementById("end").value.split(':');
+        start = new Date(current.getFullYear(), current.getMonth(), current.getDay(), start[0], start[1]);
+        end = new Date(current.getFullYear(), current.getMonth(), current.getDay(), end[0], end[1]);
         const payload = {
           name: document.getElementById("name").value,
           classTrainer: document.getElementById("trainerID").value,
           price: document.getElementById("price").value,
           noOfSessions: document.getElementById("sessionsNo").value,
           description: document.getElementById("description").value,
-          startDate: document.getElementById("start").value,
-          endDate: document.getElementById("end").value,
+          startDate: start,
+          endDate: end,
         };
         fetch("/api/v1/admin/sessions/addclass", {
           method: "POST",
