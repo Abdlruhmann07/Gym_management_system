@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const members = [
+        {
+          id: "1",
+          firstname: "Abdo",
+          lastname: "Sherif",
+          username: "abdosherif",
+          email: "abdo@gmail.com",
+          phonenumber: "01012345678",
+          address: "582, Gardenia city",
+          bfd: new Date(),
+          membershipPlan: "A",
+          attendance: "20",
+        },
+        {
+          id: "2",
+          firstname: "Tarek",
+          lastname: "Hassan",
+          username: "tarekhassan",
+          email: "tarek@gmail.com",
+          phonenumber: "01068235608",
+          address: "Zahraa Nasr city",
+          bfd: new Date(),
+          membershipPlan: "B",
+          attendance: "25",
+        },
+      ]
+    </script>
+    <title>Members</title>
+    <style>
+      a {
+        text-decoration: none;
+      }
+      html,
+      body {
+        height: 100vh;
+      }
+
+      .sidebar {
+        background-color: var(--bs-gray-800);
+        flex: 0.2;
+        height: 100vh;
+      }
+
+      .sidebar--page.active {
+        color: white;
+        background-color: var(--bs-gray-700);
+      }
+
+      .sidebar--page {
+        color: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+      }
+
+      .sidebar--page:hover {
+        background-color: var(--bs-gray-700);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="row h-100 d-flex">
+      <div class="col-3 flex-grow-1">
+        <!-- SIDEBAR -->
+        <div class="sidebar p-2 pt-5 h-100">
+          <a href="/admin/dashboard.html">
+            <div class="sidebar--page my-1 p-2 fs-5 rounded">
+              Dashboard
+            </div>
+          </a>
+          <a href="/admin/sessions.html">
+            <div class="sidebar--page my-1 p-2 fs-5 rounded">Sessions</div>
+          </a>
+          <a href="/admin/plans.html">
+            <div class="sidebar--page my-1 p-2 fs-5 rounded">Plans</div>
+          </a>
+          <a href="/admin/members.html">
+            <div class="sidebar--page active my-1 p-2 fs-5 rounded">Memebers</div>
+          </a>
+          <a href="/admin/staff.html">
+            <div class="sidebar--page my-1 p-2 fs-5 rounded">Staff</div>
+          </a>
+          <a href="/admin/payments.html">
+            <div class="sidebar--page my-1 p-2 fs-5 rounded">Payments</div>
+          </a>
+        </div>
+        <!-- SIDEBAR -->
+      </div>
+      <div class="col-9 flex-grow-1">
+        <main class="p-2 pt-5 h-100">
+          <h2 class="mb-3">Members</h2>
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th class="col">ID</th>
+                <th class="col">First Name</th>
+                <th class="col">Last Name</th>
+                <th class="col">Username</th>
+                <th class="col">email</th>
+                <th class="col">Phone Number</th>
+                <th class="col">Plan</th>
+                <th class="col">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="col">1</td>
+                <td class="col">Abdo</td>
+                <td class="col">Sherif</td>
+                <td class="col">abdosherif</td>
+                <td class="col">dodger@gmail.com</td>
+                <td class="col">01012345678</td>
+                <td class="col">A</td>
+                <td class="col">
+                  <button class="btn btn-secondary" onclick="showMemberModal(1)">View Details</button>
+                </td>
+              </tr>
+              <tr>
+                <td class="col">2</td>
+                <td class="col">Tarek</td>
+                <td class="col">Hassan</td>
+                <td class="col">tarekhassan</td>
+                <td class="col">tarek@gmail.com</td>
+                <td class="col">01068235608</td>
+                <td class="col">B</td>
+                <td class="col">
+                  <button class="btn btn-secondary" onclick="showMemberModal(2)">View Details</button>
+                </td>
+              </tr>
+            </tbody>
+
+            <!-- Member Details Modal -->
+          <div
+          class="modal fade"
+          id="member-details"
+          tabindex="-1"
+          aria-labelledby="member-details-modal"
+          aria-hidden="true"
+        >
+          <div
+            class="modal-dialog modal-dialog-centered"
+            id="member-details-modal"
+            style="max-width: 1000px !important ; width: 700px !important"
+          >
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="member-details-modal">
+                  Member Details
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <form
+                class="needs-validation"
+                novalidate
+                onsubmit="return updateMember(this)"
+              >
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label for="id" class="form-label">ID</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      disabled
+                      id="id"
+                    />
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-12 col-md-6">
+                      <label for="firstname" class="form-label">First Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        required
+                        id="firstname"
+                      />
+                      <div class="invalid-feedback">First Name is required</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="firstname" class="form-label"
+                        >Last Name</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        required
+                        id="lastname"
+                      />
+                      <div class="invalid-feedback">Last Name is required</div>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-12 col-md-6">
+                      <label for="email" class="form-label">Email</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        required
+                        id="email"
+                      />
+                      <div class="invalid-feedback">Email is required</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="phonenumber" class="form-label"
+                        >Phone Number</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        required
+                        id="phonenumber"
+                      />
+                      <div class="invalid-feedback">Phonenumber is required</div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="address" class="form-label"
+                      >Address</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      required
+                      id="address"
+                    />
+                    <div class="invalid-feedback">Address is required</div>
+                  </div>
+                  <div class="mb-3">
+                      <label for="bfd" class="form-label">Birthdate</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        required
+                        id="bfd"
+                      />
+                      <div class="invalid-feedback">Birthdate is required</div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="membershipPlan" class="form-label">Membership Plan</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      required
+                      id="membershipPlan"
+                    />
+                    <div class="invalid-feedback">Membership is required</div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="attendance" class="form-label">Attendance</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      required
+                      id="attendance"
+                    />
+                    <div class="invalid-feedback">Attendance is required</div>
+                  </div>
+                <div class="modal-footer">
+                  <div class="d-flex justify-content-between w-100">
+                      <div>
+                        <button type="submit" class="btn btn-danger">
+                          Delete
+                        </button>
+                      </div>
+                      <div>
+                        <button
+                          type="button"
+                          class="btn btn-secondary"
+                          data-bs-dismiss="modal"
+                        >
+                          Close
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                          Update
+                        </button>
+                      </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Member Details Modal -->
+          </table>
+
+          <button class="btn btn-primary" data-bs-toggle="modal"
+          data-bs-target="#new-member">
+            New member
+          </button>
+
+          <!-- New Member Modal -->
+          <div
+            class="modal fade"
+            id="new-member"
+            tabindex="-1"
+            aria-labelledby="newMemberModal"
+            aria-hidden="true"
+          >
+            <div
+              class="modal-dialog modal-dialog-centered"
+              id="new-member-modal"
+              style="max-width: 1000px !important ; width: 700px !important"
+            >
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="newMemberModalLabel">
+                    New Member
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <form
+                  class="needs-validation"
+                  novalidate
+                  onsubmit="return addMember(this)"
+                >
+                  <div class="modal-body">
+                    <div class="row mb-3">
+                      <div class="col-12 col-md-6">
+                        <label for="new-member-firstname" class="form-label">First Name</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          required
+                          id="new-member-firstname"
+                        />
+                        <div class="invalid-feedback">First Name is required</div>
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <label for="new-member-lastname" class="form-label"
+                          >Last Name</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          required
+                          id="new-member-lastname"
+                        />
+                        <div class="invalid-feedback">Last Name is required</div>
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-12 col-md-6">
+                        <label for="new-member-email" class="form-label">Email</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          required
+                          id="new-member-email"
+                        />
+                        <div class="invalid-feedback">Email is required</div>
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <label for="new-member-phonenumber" class="form-label"
+                          >Phone Number</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          required
+                          id="new-member-phonenumber"
+                        />
+                        <div class="invalid-feedback">Phonenumber is required</div>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="new-member-address" class="form-label"
+                        >Address</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        required
+                        id="new-member-address"
+                      />
+                      <div class="invalid-feedback">Address is required</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="bfd" class="form-label">Birthdate</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          required
+                          id="new-member-bfd"
+                        />
+                        <div class="invalid-feedback">Birthdate is required</div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="new-member-membershipPlan" class="form-label">Membership Plan</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        required
+                        id="new-member-membershipPlan"
+                      />
+                      <div class="invalid-feedback">Membership is required</div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="new-member-attendance" class="form-label">Attendance</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        required
+                        id="new-member-attendance"
+                      />
+                      <div class="invalid-feedback">Attendance is required</div>
+                    </div>
+                  <div class="modal-footer">
+                          <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                          >
+                            Close
+                          </button>
+                          <button type="submit" class="btn btn-primary">
+                            Create
+                          </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- New Member Modal -->
+
+          
+        </main>
+      </div>
+    </div>
+
+    <script>
+      (() => {
+        "use strict";
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        const forms = document.querySelectorAll(".needs-validation");
+
+        // Loop over them and prevent submission
+        Array.from(forms).forEach((form) => {
+          form.addEventListener(
+            "submit",
+            (event) => {
+              if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+
+              form.classList.add("was-validated");
+            },
+            false
+          );
+        });
+      })();
+
+      const addMember = () => {
+        const payload = {
+          firstname: document.getElementById("new-member-firstname").value,
+          lastname: document.getElementById("new-member-lastname").value,
+          email: document.getElementById("new-member-email").value,
+          phonenumber: document.getElementById("new-member-phonenumber").value,
+          address: document.getElementById("new-member-address").value,
+          bfd: document.getElementById("new-member-bfd").value,
+          membershipPlan: document.getElementById("new-member-membershipPlan").value,
+          attendance: document.getElementById("new-member-attendance").value,
+        };
+        fetch("/api/v1/admin/members/addmember", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        })
+          .then((res) => {
+            if (!res || !res.ok || res.status !== 200) {
+              throw new Error("Error");
+            } else {
+              Toastify({
+                text: "Member Created Successfully",
+                duration: 3000,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: "center", // `left`, `center` or `right`
+                stopOnFocus: false, // Prevents dismissing of toast on hover
+                style: {
+                  background: "var(--bs-success)",
+                },
+              }).showToast();
+            }
+          })
+          .catch((err) => {
+            Toastify({
+              text: "Something went wrong",
+              duration: 3000,
+              close: true,
+              gravity: "top", // `top` or `bottom`
+              position: "center", // `left`, `center` or `right`
+              stopOnFocus: false,
+              style: {
+                background: "var(--bs-danger)",
+              },
+            }).showToast();
+            console.log(err);
+          });
+      };
+      
+      const showMemberModal = (memberId) => {
+        const memberDetailsModal = new bootstrap.Modal(document.getElementById('member-details'), {})
+        const member = members.filter(member => member.id == memberId)[0];
+        memberDetailsModal.show();
+        document.getElementById("id").value = member.id
+        document.getElementById("firstname").value = member.firstname
+        document.getElementById("lastname").value = member.lastname
+        document.getElementById("email").value = member.email
+        document.getElementById("phonenumber").value = member.phonenumber
+        document.getElementById("address").value = member.address
+        document.getElementById("bfd").value = `${member.bfd.getDay()+1}-${member.bfd.getMonth()+1}-${member.bfd.getFullYear()}`
+        document.getElementById("membershipPlan").value = member.membershipPlan
+        document.getElementById("attendance").value = member.attendance
+      }
+    </script>
+  </body>
+</html>
