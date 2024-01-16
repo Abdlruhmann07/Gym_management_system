@@ -44,6 +44,20 @@
         background-color: var(--bs-gray-700);
       }
     </style>
+    <script>
+      const plans = [
+        {
+          id: 1,
+          title: "Plan A",
+          description: "Description of Plan A",
+          price: "200",
+          duration: {
+            value: 30,
+            unit: "Days",
+          },
+        },
+      ];
+    </script>
   </head>
   <body>
     <div class="row h-100 d-flex">
@@ -51,9 +65,7 @@
         <!-- SIDEBAR -->
         <div class="sidebar p-2 pt-5 h-100">
           <a href="/admin/dashboard.html">
-            <div class="sidebar--page my-1 p-2 fs-5 rounded">
-              Dashboard
-            </div>
+            <div class="sidebar--page my-1 p-2 fs-5 rounded">Dashboard</div>
           </a>
           <a href="/admin/sessions.html">
             <div class="sidebar--page my-1 p-2 fs-5 rounded">Sessions</div>
@@ -97,68 +109,69 @@
                 <td class="col">30</td>
                 <td class="col">Days</td>
                 <td class="col">
-                  <button class="btn btn-secondary" data-bs-toggle="modal"
-                  data-bs-target="#plan-details">View Details</button>
+                  <button
+                    class="btn btn-secondary"
+                    onclick="showPlanDetailsModal(1)"
+                  >
+                    View Details
+                  </button>
                 </td>
               </tr>
             </tbody>
-          </table>
-
-          <button class="btn btn-primary" data-bs-toggle="modal"
-          data-bs-target="#new-plan">New Plan</button>
-
-          <!-- Plan Details Modal -->
-          <div
-            class="modal fade"
-            id="plan-details"
-            tabindex="-1"
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
-          >
+            <!-- Plan Details Modal -->
             <div
-              class="modal-dialog modal-dialog-centered"
-              id="plan-details-modal"
-              style="max-width: 1000px !important ; width: 700px !important"
+              class="modal fade"
+              id="plan-details"
+              tabindex="-1"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
             >
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">
-                    Plan Details
-                  </h1>
-                  <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <form
-                  class="needs-validation"
-                  novalidate
-                  onsubmit="return updatePlan(this)"
-                >
-                  <div class="modal-body">
-                    <div class="mb-3">
-                      <label for="id" class="form-label">ID</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        disabled
-                        id="id"
-                      />
-                    </div>
-                    <div class="mb-3">
-                        <label for="title" class="form-label">Title</label>
+              <div
+                class="modal-dialog modal-dialog-centered"
+                id="plan-details-modal"
+                style="max-width: 1000px !important ; width: 700px !important"
+              >
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">
+                      Plan Details
+                    </h1>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <form
+                    class="needs-validation"
+                    novalidate
+                    onsubmit="return updatePlan(this)"
+                  >
+                    <div class="modal-body">
+                      <div class="mb-3">
+                        <label for="details-id" class="form-label">ID</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          disabled
+                          id="details-id"
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label for="details-title" class="form-label"
+                          >Title</label
+                        >
                         <input
                           type="text"
                           class="form-control"
                           required
-                          id="title"
+                          id="details-title"
                         />
                         <div class="invalid-feedback">Title is required</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="form-label"
+                      </div>
+                      <div class="mb-3">
+                        <label for="details-description" class="form-label"
                           >Description</label
                         >
                         <textarea
@@ -166,19 +179,23 @@
                           class="form-control"
                           required
                           rows="3"
-                          id="description"
+                          id="details-description"
                         ></textarea>
-                        <div class="invalid-feedback">Description is required</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="price" class="form-label">Price</label>
+                        <div class="invalid-feedback">
+                          Description is required
+                        </div>
+                      </div>
+                      <div class="mb-3">
+                        <label for="details-price" class="form-label"
+                          >Price</label
+                        >
                         <div class="row">
                           <div class="col-10">
                             <input
                               type="text"
                               class="form-control"
                               required
-                              id="price"
+                              id="details-price"
                             />
                           </div>
                           <div class="col-2">
@@ -188,9 +205,9 @@
                           </div>
                         </div>
                         <div class="invalid-feedback">Price is required</div>
-                    </div>
+                      </div>
                       <div class="mb-3">
-                        <label for="duration" class="form-label"
+                        <label for="details-duration" class="form-label"
                           >Duration</label
                         >
                         <div class="row">
@@ -199,25 +216,39 @@
                               type="text"
                               class="form-control"
                               required
-                              id="duration"
+                              id="details-duration-value"
                               placeholder=""
                             />
-                            <div class="invalid-feedback">Duration is required</div>
+                            <div class="invalid-feedback">
+                              Duration Value is required
+                            </div>
                           </div>
                           <div class="col-12 col-md-6">
-                            <select name="unit" id="unit" class="form-select" aria-label="Default select example">
-                              <option value="days">Days</option>
-                              <option value="months">Months</option>
-                              <option value="years">Years</option>
+                            <select
+                              name="unit"
+                              id="details-duration-unit"
+                              required
+                              class="form-select"
+                              aria-label="Default select example"
+                            >
+                              <option value="Days">Days</option>
+                              <option value="Months">Months</option>
+                              <option value="Years">Years</option>
                             </select>
+                            <div class="invalid-feedback">
+                              Duration Unit is required
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  <div class="modal-footer">
-                    <div class="d-flex justify-content-between w-100">
+                    <div class="modal-footer">
+                      <div class="d-flex justify-content-between w-100">
                         <div>
-                          <button type="submit" class="btn btn-danger">
+                          <button
+                            onclick="deletePlan(1)"
+                            class="btn btn-danger"
+                          >
                             Delete
                           </button>
                         </div>
@@ -233,15 +264,341 @@
                             Update
                           </button>
                         </div>
+                      </div>
                     </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- Plan Details Modal -->
+          </table>
+
+          <button
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#new-plan"
+          >
+            New Plan
+          </button>
+
+          <!-- New Plan Modal -->
+          <div
+            class="modal fade"
+            id="new-plan"
+            tabindex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div
+              class="modal-dialog modal-dialog-centered"
+              id="plan-details-modal"
+              style="max-width: 1000px !important ; width: 700px !important"
+            >
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    New Plan
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <form
+                  class="needs-validation"
+                  novalidate
+                  onsubmit="return addPlan(this)"
+                >
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label for="title" class="form-label">Title</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        required
+                        id="title"
+                      />
+                      <div class="invalid-feedback">Title is required</div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="description" class="form-label"
+                        >Description</label
+                      >
+                      <textarea
+                        type="text"
+                        class="form-control"
+                        required
+                        rows="3"
+                        id="description"
+                      ></textarea>
+                      <div class="invalid-feedback">
+                        Description is required
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="price" class="form-label">Price</label>
+                      <div class="row">
+                        <div class="col-10">
+                          <input
+                            type="text"
+                            class="form-control"
+                            required
+                            id="price"
+                          />
+                        </div>
+                        <div class="col-2">
+                          <div class="h-100 d-flex align-items-center">L.E</div>
+                        </div>
+                      </div>
+                      <div class="invalid-feedback">Price is required</div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="duration" class="form-label">Duration</label>
+                      <div class="row">
+                        <div class="col-12 col-md-6">
+                          <input
+                            type="text"
+                            class="form-control"
+                            required
+                            id="duration"
+                            placeholder=""
+                          />
+                          <div class="invalid-feedback">
+                            Duration is required
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                          <select
+                            name="unit"
+                            id="unit"
+                            class="form-select"
+                            aria-label="Default select example"
+                          >
+                            <option value="days">Days</option>
+                            <option value="months">Months</option>
+                            <option value="years">Years</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                      Create
+                    </button>
                   </div>
                 </form>
               </div>
             </div>
           </div>
-          <!-- Plan Details Modal -->
+          <!-- New Plan Modal -->
         </main>
       </div>
     </div>
+
+    <script>
+      (() => {
+        "use strict";
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        const forms = document.querySelectorAll(".needs-validation");
+
+        // Loop over them and prevent submission
+        Array.from(forms).forEach((form) => {
+          form.addEventListener(
+            "submit",
+            (event) => {
+              if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+
+              form.classList.add("was-validated");
+            },
+            false
+          );
+        });
+      })();
+
+      const updatePlan = () => {
+        const id = document.getElementById("details-id").value;
+        const title = document.getElementById("details-title").value;
+        const description = document.getElementById(
+          "details-description"
+        ).value;
+        const price = document.getElementById("details-price").value;
+        const durationValue = document.getElementById(
+          "details-duration-value"
+        ).value;
+        const durationUnit = document.getElementById(
+          "details-duration-unit"
+        ).value;
+
+        const payload = {
+          id,
+          title,
+          description,
+          price,
+          durationValue,
+          durationUnit,
+        };
+
+        fetch("/api/v1/admin/plans/updateplan", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        })
+          .then((res) => {
+            if (!res || !res.ok || res.status !== 200) {
+              throw new Error("Error");
+            } else {
+              Toastify({
+                text: "Plan Updated Successfully",
+                duration: 3000,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: "center", // `left`, `center` or `right`
+                stopOnFocus: false, // Prevents dismissing of toast on hover
+                style: {
+                  background: "var(--bs-success)",
+                },
+              }).showToast();
+            }
+          })
+          .catch((err) => {
+            Toastify({
+              text: "Something went wrong",
+              duration: 3000,
+              close: true,
+              gravity: "top", // `top` or `bottom`
+              position: "center", // `left`, `center` or `right`
+              stopOnFocus: false,
+              style: {
+                background: "var(--bs-danger)",
+              },
+            }).showToast();
+            console.log(err);
+          });
+      };
+
+      const createPlan = () => {
+        const title = document.getElementById("title").value;
+        const description = document.getElementById("description").value;
+        const price = document.getElementById("price").value;
+        const durationValue = document.getElementById("durationValue").value;
+        const durationUnit = document.getElementById("durationUnit").value;
+
+        const payload = {
+          title,
+          description,
+          price,
+          durationValue,
+          durationUnit,
+        };
+
+        fetch("/api/v1/admin/plans/addplan", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        })
+          .then((res) => {
+            if (!res || !res.ok || res.status !== 200) {
+              throw new Error("Error");
+            } else {
+              Toastify({
+                text: "Plan Created Successfully",
+                duration: 3000,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: "center", // `left`, `center` or `right`
+                stopOnFocus: false, // Prevents dismissing of toast on hover
+                style: {
+                  background: "var(--bs-success)",
+                },
+              }).showToast();
+            }
+          })
+          .catch((err) => {
+            Toastify({
+              text: "Something went wrong",
+              duration: 3000,
+              close: true,
+              gravity: "top", // `top` or `bottom`
+              position: "center", // `left`, `center` or `right`
+              stopOnFocus: false,
+              style: {
+                background: "var(--bs-danger)",
+              },
+            }).showToast();
+            console.log(err);
+          });
+      };
+
+      const deletePlan = (planId) => {
+        const payload = {
+          id: planId,
+        };
+
+        fetch("/api/v1/admin/plans/deleteplan", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        })
+          .then((res) => {
+            if (!res || !res.ok || res.status !== 200) {
+              throw new Error("Error");
+            } else {
+              Toastify({
+                text: "Plan deleted Successfully",
+                duration: 3000,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: "center", // `left`, `center` or `right`
+                stopOnFocus: false, // Prevents dismissing of toast on hover
+                style: {
+                  background: "var(--bs-success)",
+                },
+              }).showToast();
+            }
+          })
+          .catch((err) => {
+            Toastify({
+              text: "Something went wrong",
+              duration: 3000,
+              close: true,
+              gravity: "top", // `top` or `bottom`
+              position: "center", // `left`, `center` or `right`
+              stopOnFocus: false,
+              style: {
+                background: "var(--bs-danger)",
+              },
+            }).showToast();
+            console.log(err);
+          });
+      };
+
+      const showPlanDetailsModal = (planId) => {
+        let plan = plans.filter((plan) => plan.id == planId)[0];
+        const sessionDetailsModal = new bootstrap.Modal(
+          document.getElementById("plan-details"),
+          {}
+        );
+        sessionDetailsModal.show();
+        document.getElementById("details-id").value = plan.id;
+        document.getElementById("details-title").value = plan.title;
+        document.getElementById("details-description").value = plan.description;
+        document.getElementById("details-price").value = plan.price;
+        document.getElementById("details-duration-value").value =
+          plan.duration.value;
+        document.getElementById("details-duration-unit").value =
+          plan.duration.unit;
+      };
+    </script>
   </body>
 </html>
