@@ -142,13 +142,13 @@ exports.viewAvailablePlans = async (req, res) => {
 }
 // subscribe member to plan
 exports.asignMemberToPlan = async (req, res) => {
-    const userId = req.params.memberId;
+    const userId = req.body;
+    const planId = req.body;
     // find the selected membership
     try {
-        const planId = req.params.planId;
         const selectedPlan = await Membership.findById(planId);
         if (!selectedPlan) return res.status(404).json({ message: 'No Plan found' })
-        console.log(selectedPlan);
+
         const user = await User.findById(userId)
         if (!user) return res.status(404).json({ message: 'User not found' })
         //! payment progress
@@ -172,20 +172,34 @@ exports.asignMemberToPlan = async (req, res) => {
         const finincial = new finincialReport({
             revenue: selectedPlan.price,
             category: 'membershipPlan',
-            planType: selectedPlan.package
+            planType: selectedPlan.membershipTitle
         })
         await finincial.save();
         // add it's id to the user property membershiPlan
         user.membershipPlan = selectedPlan._id;
-        const userPlan = await User.findById(user._id).populate('membershipPlan');
-        //save user
-        await user.save({ validateBeforeSave: false });
+        //
+        const currentDate = new Date();
+        let expiresDate;
+        let daysLeft;
+
+        if (selectedPlan.duration.unit === 'days') {
+            expiresDate = new Date(currentDate.getTime() + (selectedPlan.duration.value * 24 * 60 * 60 * 1000));
+            daysLeft = selectedPlan.duration.value
+        } else if (selectedPlan.duration.unit === 'months') {
+            expiresDate = new Date(currentDate.setMonth(currentDate.getMonth() + selectedPlan.duration.value));
+            daysLeft = selectedPlan.duration.value * 30
+        } else if (selectedPlan.duration.unit === 'years') {
+            expiresDate = new Date(currentDate.setFullYear(currentDate.getFullYear() + selectedPlan.duration.value));
+            daysLeft = selectedPlan.duration.value * 365
+        }
+
+        // Update the user's subscription details
+        user.subscription.expiresDate = expiresDate;
+        user.subscription.daysLeft = daysLeft;
+
+        // Save the updated user and plan
+        await user.save({validateBeforeSave : true});
         return res.status(200)
-            .json({
-                member: user.username,
-                state: 'success', plan: userPlan.name,
-                payment: userPayment.transactionId
-            });
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message })
     }

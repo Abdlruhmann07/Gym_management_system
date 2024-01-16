@@ -19,6 +19,7 @@ router.post('/setNewPassword/:id', setNewPassword);
 router.post('/verifyotp', verifyotp);
 // get signup page
 router.get('/signup', getSignup);
+
 //
 router.get('/', authenticate, (req, res) => {
     res.render('home', { user: req.user });
@@ -27,9 +28,9 @@ router.get('/home', authenticate, (req, res) => {
     res.send('Home Page')
 });
 // delete me upload TESTED
-const { getUploadpage, Upload, uploadPhoto } = require('../controllers/authControllers')
-router.get('/upload', authenticate, getUploadpage)
-router.post('/upload', authenticate, uploadPhoto, Upload)
-router.get('/forgettpassword', getforgettPassword)
+// const { getUploadpage, Upload, uploadPhoto } = require('../controllers/authControllers')
+// router.get('/upload', authenticate, getUploadpage)
+// router.post('/upload', authenticate, uploadPhoto, Upload)
+// router.get('/forgettpassword', getforgettPassword)
 
 module.exports = router;

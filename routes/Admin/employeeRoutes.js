@@ -4,7 +4,7 @@ const { addEmployee,
     viewAllEmployees,
     viewSingleEmployee,
     updateEmployee,
-    deleteEmployee } = require('../../controllers/Admin/employeeController');
+    deleteEmployee } = require('../../controllers/Admin/staffController');
 
 router.post('/add-employee', addEmployee) //tested
 router.get('/', viewAllEmployees) //tested

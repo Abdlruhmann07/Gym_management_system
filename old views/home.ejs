@@ -50,12 +50,11 @@
     <h1>Welcome: <%= user.username%> </h1>
     <h2>Role: <%= user.role%> </h2>
     <h2>code: <%= user.checkInCode%> </h2>
-    <h2>id: <%= user._id%> </h2>
+    <h2>mongoid: <%= user._id%> </h2>
+    <h2>id: <%= user.id%> </h2>
 
     <img src="/img/users/<%= user.photo %>" alt="User Photo">
-
-    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
+    
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

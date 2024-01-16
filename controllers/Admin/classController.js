@@ -6,19 +6,21 @@ exports.addClass = async (req, res) => {
     try {
         const {
             name,
-            description,
             classTrainer,
-            members,
+            description,
             price,
-            noOfSessions
+            noOfSessions,
+            startDate,
+            endDate,
         } = req.body;
         const newClass = await Class.create({
             name,
-            description,
             classTrainer,
-            members,
+            description,
             price,
-            noOfSessions
+            noOfSessions,
+            startDate,
+            endDate,
         })
         res.status(200).json({ state: 'success', data: newClass });
     } catch (err) {
@@ -146,7 +148,7 @@ exports.deleteTrainerFromClass = async (req, res) => {
         res.status(500).json({ message: 'An error occurred while removing trainer from class' });
     }
 };
-// delete members from a class //!
+// delete members from a class 
 exports.deleteMembersFromClass = async (req, res) => {
 
     const { memberId } = req.body;
@@ -175,7 +177,7 @@ exports.deleteMembersFromClass = async (req, res) => {
 };
 // view all class members
 exports.viewAllClassMembers = async (req, res) => {
-    const classId  = req.params.id;
+    const classId = req.params.id;
     const page = parseInt(req.query.page) - 1 || 0;
     const limit = parseInt(req.query.limit) || 5;
     const search = req.query.search || ""
@@ -189,7 +191,7 @@ exports.viewAllClassMembers = async (req, res) => {
         }
 
         let classMembers = myclass.members
-        console.log(classMembers)
+        // console.log(classMembers)
         if (search) {
             classMembers = classMembers.filter(member => {
                 return (

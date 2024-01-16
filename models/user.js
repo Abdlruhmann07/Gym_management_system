@@ -75,6 +75,14 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Membership'
     },
+    subscription: {
+        planExpiresDate: Date,
+        planDaysLeft: Number,
+        isActive: {
+            type: Boolean,
+            default: true
+        }, 
+    },
     payments: [
         {
             type: Schema.Types.ObjectId,
@@ -90,12 +98,12 @@ const userSchema = new Schema({
         },
     ],
     // fields for trainers
-    payroll: {
-        type: Number,
-        required: function () {
-            return this.role === 'trainer';
-        }
-    },// required
+    // payroll: {
+    //     type: Number,
+    //     required: function () {
+    //         return this.role === 'trainer';
+    //     }
+    // },// required
     trainerSessions: [
         {
             type: Schema.Types.ObjectId,
@@ -152,6 +160,13 @@ userSchema.pre('save', async function (next) {
 userSchema.pre('save', function (next) {
     if (this.isNew) {
         this.checkInCode = Math.floor(1000 + Math.random() * 9000);
+    }
+    next();
+});
+userSchema.pre('save', async function (next) {
+    if (this.isNew) {
+        const count = await this.constructor.countDocuments();
+        this.id = count + 1;
     }
     next();
 });

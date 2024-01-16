@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <div class="login">
+        <h1>Login</h1>
+        <div class="container">
+            <form action="/api/v1/slogin" method="post">
+                <div class="content">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" placeholder="Enter Your Email">
+                </div>
+                <div class="content">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" placeholder="Enter Your Password">
+                </div>
+                <input type="submit" value="Login">
+                <div class="forget">
+                    <span>Forget Your Password?</span>
+                    <a href="http://localhost:8080/api/v1/forgettpassword">Reset Password</a>
+                </div>
+                <div class="forget">
+                    <span>Don't have an account?</span>
+                    <a href="http://localhost:8080/api/v1/signup">Create Account!</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

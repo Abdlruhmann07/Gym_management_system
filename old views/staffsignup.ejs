@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/signup.css">
+</head>
+
+<body>
+    <div class="sign-up">
+        <h1>Sign Up</h1>
+        <div class="container">
+            <form action="/api/v1/ssignup" method="post">
+                <div class="content">
+                    <label for="firstname">First Name</label>
+                    <input type="text" name="firstname" placeholder="Enter your First Name">
+                </div>
+                <div class="content">
+                    <label for="lastname">Last Name</label>
+                    <input type="text" name="lastname" placeholder="Enter your Last Name">
+                </div>
+                <div class="content">
+                    <label for="username">User Name</label>
+                    <input type="text" name="username" placeholder="Enter your User Name">
+                </div>
+                <div class="content">
+                    <label for="email">Email</label>
+                    <input  name="email" placeholder="Enter your Email">
+                </div>
+                <div class="content">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" placeholder="Enter Password">
+                </div>
+                <div class="content">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" name="confirmPassword" placeholder="Confirm Password">
+                </div>
+                <div class="content">
+                    <label for="phonenumber">Phone Number</label>
+                    <input type="number" name="phonenumber" placeholder="Enter your Phone Number">
+                </div>
+                <div class="content">
+                    <label for="bfd">Birth Date</label>
+                    <input type="date" name="bfd">
+                </div>
+                <div class="content">
+                    <label for="city">City</label>
+                    <input type="text" name="city" placeholder="Enter your City">
+                </div>
+                <div class="content">
+                    <label for="st">St.</label>
+                    <input type="text" name="st" placeholder="Enter your St.">
+                </div>
+                <!-- <div class="content">
+                    <h1>Gender</h1>
+                    <label class="radio">One
+                        <input type="radio" checked="checked" name="radio">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="radio">Two
+                        <input type="radio" name="radio">
+                        <span class="checkmark"></span>
+                    </label>
+                </div> -->
+                <input type="submit" class="full-width hover">
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

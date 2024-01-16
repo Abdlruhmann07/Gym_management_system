@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const StaffModel = require('../models/staff');
 const SECRET_KEY = process.env.SECRET_KEY
 const util = require('node:util');
 
-exports.authenticate = async (req, res, next) => {
+exports.s_authenticate = async (req, res, next) => {
     // Read the token and check if it exists
     // const testToken = req.headers['authorization'];
     const token = req.cookies.token
@@ -21,9 +21,9 @@ exports.authenticate = async (req, res, next) => {
         const decodedToken = await util.promisify(jwt.verify)(token, SECRET_KEY);
         console.log(decodedToken);
         // You can also attach the decoded token to the user
-        const user = await User.findById(decodedToken.id);
+        const staff = await StaffModel.findById(decodedToken.id);
         // if(user) {
-            req.user = user;
+            req.staff = staff;
         // } else {
         // const staff = await StaffModel.findById(decodedToken.id);
         //     req.staff = staff;
@@ -38,13 +38,13 @@ exports.authenticate = async (req, res, next) => {
 }
 
 // restirct by role
-exports.authorize = (role) => {
+exports.s_authorize = (role) => {
     return (req, res, next) => {
         // console.log(req.user);
-        if (!req.user) {
+        if (!req.staff) {
             res.redirect('/login');
         }
-        if (req.user.role !== role) {
+        if (req.staff.role !== role) {
             res.status(403).send('Authorization Required')
         }
         next();

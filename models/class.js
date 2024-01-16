@@ -11,6 +11,7 @@ const classSchema = new Schema({
     },
     classTrainer: {
         type: Schema.Types.ObjectId,
+        required: true,
         ref: 'User',
         default: null,
         autopopulate: true
@@ -60,9 +61,15 @@ const classSchema = new Schema({
             ref: 'Announcement'
         }
     ],
+    startDate: {
+        type: Date,
+    },
+    endDate: {
+        type: Date,
+    },
     averageRating: Number,
     photo: String,
-});
+},{timestamps: true});
 
 const Class = new model('Class', classSchema);
 module.exports = Class;

@@ -3,13 +3,12 @@ const Membership = require('../../models/membership');
 // Add new membership  POST , PRIVATE
 exports.addMemberShip = async (req, res) => {
     try {
-        const { membershipTitle, description, price, package, features } = req.body;
+        const { membershipTitle, description, price, duration } = req.body;
         const newMembership = await Membership.create({
             membershipTitle,
             description,
             price,
-            package,
-            features
+            duration,
         })
         res.status(201).json({ state: 'success', data: newMembership })
     } catch (e) {

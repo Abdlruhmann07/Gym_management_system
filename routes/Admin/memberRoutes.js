@@ -14,7 +14,7 @@ const { addMember,
     viewAvailablePlans,
 } = require('../../controllers/Admin/memberControllers');
 const { authenticate, authorize } = require('../../middlewares/auth');
-const { uploadPhoto } = require('../../controllers/authControllers');
+const { uploadPhoto } = require('../../helpers/upload/user');
 
 router.get('/', getAllMembers) // tested
 router.get('/addmember', authenticate, getaddMember)

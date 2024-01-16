@@ -12,7 +12,7 @@ const storeRoutes = require('./storeRoutes/index');
 
 
 
-router.use('/memberships', membershipsRoutes);
+router.use('/plans', membershipsRoutes);
 router.use('/members', memberRoutes);
 router.use('/classes', classesRoutes);
 router.use('/equipments', equipmentRoutes);

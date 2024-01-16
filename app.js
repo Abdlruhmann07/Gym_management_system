@@ -13,12 +13,16 @@ app.use(cookieParser());
 app.set('view engine', 'ejs');
 // mounting routes
 const authRoutes = require('./routes/authRoutes');
+const staffAuthRoutes = require('./routes/auth/staffAuthRoutes');
+const staffRoutes = require('./routes/Staff/staffRoutes');
 const adminRoutes = require('./routes/Admin/index');
 const memberRoutes = require('./routes/memberRoutes');
 const attendanceRoutes = require('./routes/attendance');
 app.use('/api/v1', authRoutes);
+app.use('/api/v1', staffAuthRoutes);
 app.use('/api/v1', attendanceRoutes);
 app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/staff', staffRoutes);
 app.use('/api/v1/member', memberRoutes);
 //End
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
