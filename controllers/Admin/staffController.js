@@ -43,7 +43,8 @@ exports.viewAllEmployees = async (req, res) => {
 
         if (employees.length === 0) return res.status(404).json('No employees yet');
 
-        res.status(200).json({ state: 'success', data: employees, pages: totalPages, count: employeesCount });
+        // res.status(200).json({ state: 'success', data: employees, pages: totalPages, count: employeesCount });
+        res.render('admin/staff' ,  {employees , totalPages , employeesCount})
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
     }

@@ -21,9 +21,7 @@ router.post('/verifyotp', verifyotp);
 router.get('/signup', getSignup);
 
 //
-router.get('/', authenticate, (req, res) => {
-    res.render('home', { user: req.user });
-})
+
 router.get('/home', authenticate, (req, res) => {
     res.send('Home Page')
 });

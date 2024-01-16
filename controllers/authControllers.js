@@ -77,7 +77,7 @@ exports.login = async (req, res, next) => {
         //     token,
         // })
         if (user.role === 'admin') {
-            res.redirect('/api/v1');
+            res.redirect('/api/v1/admin/dashboard');
         } else if (user.role === 'member') {
             res.redirect('/api/v1')
         }

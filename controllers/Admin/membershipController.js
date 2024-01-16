@@ -22,9 +22,9 @@ exports.getAllMemberships = async (req, res) => {
         const memberships = await Membership.find({});
         if (!memberships) {
             res.send('No availble memberships yet')
-        } else {
-            res.status(200).json({ state: 'success', data: memberships })
-        }
+        } 
+            // res.status(200).json({ state: 'success', data: memberships })
+            res.render('admin/plans')
     } catch (e) {
         res.status(500).json({ state: 'error', message: e.message });
     }

@@ -20,8 +20,8 @@ router.get('/', getAllMembers) // tested
 router.get('/addmember', authenticate, getaddMember)
 router.get('/:id', authenticate, viewSingleMember) //tested
 router.post('/addmember', authenticate, uploadPhoto, addMember) //tested
-router.delete('/:id', deleteMember) // tested
-router.put('/:id', updateSingleMember) // tested
+router.delete('/deleteMember/:id', deleteMember) // tested
+router.put('/updateMember/:id', updateSingleMember) // tested
 router.get('/:id/view-member-attendance', viewMemberAttendance) // 
 router.get('/:id/available-sessions', viewAvailableClassesToJoin)
 router.get('/:id/available-plans', viewAvailablePlans)

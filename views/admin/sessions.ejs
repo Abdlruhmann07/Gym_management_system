@@ -164,28 +164,6 @@
                   </td>
                 </tr>
               <% }) %>
-              <tr>
-                <td scope="col">Fitness</td>
-                <td scope="col">3</td>
-                <td scope="col">Ahmed</td>
-                <td scope="col">15</td>
-                <td scope="col">200</td>
-                <td scope="col">4.9</td>
-                <td scope="col">
-                  <button class="btn btn-secondary" onclick="openSessionDetailsModal(3)">View Details</button>
-                </td>
-              </tr>
-              <tr>
-                <td scope="col">Fitness</td>
-                <td scope="col">4</td>
-                <td scope="col">Ahmed</td>
-                <td scope="col">15</td>
-                <td scope="col">200</td>
-                <td scope="col">4.9</td>
-                <td scope="col">
-                  <button class="btn btn-secondary" onclick="openSessionDetailsModal(4)">View Details</button>
-                </td>
-              </tr>
             </tbody>
           </table>
 
@@ -487,7 +465,7 @@
                             <th scope="col">Attendance</th>
                           </tr>
                         </thead>
-                        <tbody class="session-details-members">
+                        <tbody class="session-details-members " id="session-details-members">
                         </tbody>
                       </table>
                     </div>
@@ -546,14 +524,17 @@
         const payload = {
           name: document.getElementById("name").value,
           classTrainer: document.getElementById("trainerID").value,
-          price: document.getElementById("price").value,
-          noOfSessions: document.getElementById("sessionsNo").value,
+          price: Number(document.getElementById("price").value),
+          noOfSessions: Number(document.getElementById("sessionsNo").value),
           description: document.getElementById("description").value,
           startDate: start,
           endDate: end,
         };
         fetch("/api/v1/admin/sessions/addclass", {
           method: "POST",
+          headers: {
+          "Content-Type": "application/json"
+        },
           body: JSON.stringify(payload),
         })
           .then((res) => {
@@ -590,7 +571,8 @@
       };
       
       const updateSession = () => {
-
+        // api/v1/sessions/updateclass/:id
+        // method put
       }
 
       const openSessionDetailsModal = (sessionId) => {
@@ -613,18 +595,27 @@
           // document.getElementById('session-details-end').value = `${session.endDate.getHours()}:${session.endDate.getMinutes()}`;
           document.getElementById('session-details-start').value = `18:00`;
           document.getElementById('session-details-end').value = `19:00`;
-          // const memebers = document.getElementById('session-details-members');
+          console.log(session.members);
+          const members = document.getElementById('session-details-members');
+          session.members.forEach(member => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+              <td>${member.username}</td>
+              <td>${member._id}</td>
+              <td>${member.phonenumber}</td>
+              <td>${member.attendance.length}</td>
+  `;
+  members.appendChild(row);
+});
           // session.members.forEach(member => {
-          //   memebers.append(`<tr>
-          //                     <td>${member.name}</td>
-          //                     <td>${member.id}</td>
-          //                     <td>${member.phone}</td>
-          //                     <td>${member.attendance}</td>
+          //   members.append(`<tr>
+          //                     <td> ${member.name}</td>
+          //                     <td> ${member.name}</td>
+          //                     <td> ${member.name}</td>
+          //                     <td> ${member.name}</td>
           //                   </tr>`)
           // })
-
         })
-
       }
     </script>
   </body>

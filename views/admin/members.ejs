@@ -78,24 +78,24 @@
       <div class="col-3 flex-grow-1">
         <!-- SIDEBAR -->
         <div class="sidebar p-2 pt-5 h-100">
-          <a href="/admin/dashboard.html">
+          <a href="/api/v1/admin/dashboard">
             <div class="sidebar--page my-1 p-2 fs-5 rounded">
               Dashboard
             </div>
           </a>
-          <a href="/admin/sessions.html">
+          <a href="/api/v1/admin/sessions">
             <div class="sidebar--page my-1 p-2 fs-5 rounded">Sessions</div>
           </a>
-          <a href="/admin/plans.html">
+          <a href="/api/v1/admin/plans">
             <div class="sidebar--page my-1 p-2 fs-5 rounded">Plans</div>
           </a>
-          <a href="/admin/members.html">
+          <a href="/api/v1/admin/members">
             <div class="sidebar--page active my-1 p-2 fs-5 rounded">Memebers</div>
           </a>
-          <a href="/admin/staff.html">
+          <a href="/api/v1/admin/staff">
             <div class="sidebar--page my-1 p-2 fs-5 rounded">Staff</div>
           </a>
-          <a href="/admin/payments.html">
+          <a href="/api/v1/admin/payments">
             <div class="sidebar--page my-1 p-2 fs-5 rounded">Payments</div>
           </a>
         </div>
@@ -529,7 +529,7 @@
           id: memberId,
         }
 
-        fetch("/api/v1/admin/members/deletemember", {
+        fetch(`/api/v1/admin/members/deleteMember/${memberId}`, {
           method: "POST",
           body: JSON.stringify(payload),
         })
@@ -589,7 +589,7 @@
           membershipPlan,
           attendance
         }
-        fetch("/api/v1/admin/members/updatemember", {
+        fetch(`/api/v1/admin/members/updateMember/${memberId}`, {
           method: "POST",
           body: JSON.stringify(payload),
         })

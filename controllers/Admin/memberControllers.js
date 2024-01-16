@@ -43,7 +43,7 @@ exports.getAllMembers = async (req, res) => {
         const totalPages = Math.ceil(membersCount / limit);
         const members = await User.find(query).skip(page * limit).limit(limit);
         if (members.length < 1) return res.status(404).send('No Members Yet!')
-        res.render('adminPages/members', { members })
+        res.render('admin/members', { members })
         // res.status(200).json({ state: 'success', data: members, pages: totalPages, count: membersCount });
     } catch (err) {
         res.status(500).json({ state: 'error viewing members', message: err.message })

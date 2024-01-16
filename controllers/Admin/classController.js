@@ -1,5 +1,6 @@
 const Class = require('../../models/class');
 const User = require('../../models/user');
+const mongoose = require('mongoose');
 
 // Add new class  POST PRIVATE
 exports.addClass = async (req, res) => {
@@ -13,18 +14,26 @@ exports.addClass = async (req, res) => {
             startDate,
             endDate,
         } = req.body;
+        let sDate = new Date(startDate);
+        let eDate = new Date(endDate);
+        // let ct =  mongoose.Types.ObjectId(classTrainer);
+        console.log(req.body)
+        console.log(typeof classTrainer, classTrainer)
+        // console.log(typeof ct , ct)
         const newClass = await Class.create({
             name,
             classTrainer,
             description,
             price,
             noOfSessions,
-            startDate,
-            endDate,
+            sDate,
+            eDate,
         })
+
         res.status(200).json({ state: 'success', data: newClass });
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
+        console.error(err.message);
     }
 }; //! Tested
 // View All classes GET PUBLIC
@@ -34,13 +43,13 @@ exports.getAllClasses = async (req, res) => {
         const limit = parseInt(req.query.limit) || 5;
         const search = req.query.search || ""
 
-        const classes = await Class.find({
+        const sessions = await Class.find({
             name: { $regex: search, $options: 'i' },
         }).skip(page * limit).limit(limit);
 
-        if (classes.length === 0) return res.status(404).json('No classes yet');
+        if (sessions.length === 0) return res.status(404).json('No classes yet');
 
-        res.status(200).json({ state: 'success', data: classes });
+        res.render('admin/sessions', { sessions })
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
     }
@@ -49,11 +58,18 @@ exports.getAllClasses = async (req, res) => {
 exports.getSingleClass = async (req, res) => {
     try {
         const id = req.params.id;
-        const singleClass = await Class.findById(id);
+        const singleClass = await Class.findById(id).populate({
+            path: 'members',
+            populate: {
+                path: 'attendance'
+            }
+        });
+        const sessionMembers = singleClass.members;
+        // const attendance = sessionMembers
         if (!singleClass) {
             return res.status(404).json({ state: 'error', message: 'No class found' });
         }
-        res.status(200).json({ state: 'success', data: singleClass });
+        res.status(200).json({ state: 'success', data: singleClass, members: sessionMembers });
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
     }
