@@ -44,6 +44,22 @@
         background-color: var(--bs-gray-700);
       }
     </style>
+    <script>
+      const payments = [
+        {
+          transactionId: 1,
+          user: 'abdo',
+          price: 200,
+          paymentType: 'Payment Type',
+          paymentDate: '1/1/2024',
+          paymentMethod: 'cash',
+          status: 'completed',
+          description: 'Payment Description',
+          refunds: [],
+          invoice: null,
+        }
+      ]
+    </script>
   </head>
   <body>
     <div class="row h-100 d-flex">
@@ -74,8 +90,173 @@
         <!-- SIDEBAR -->
       </div>
       <div class="col-9 flex-grow-1">
-        <main></main>
+        <main class="p-2 pt-5 h-100">
+          <h2 class="mb-3">Payments</h2>
+
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th class="col">ID</th>
+                <th class="col">User</th>
+                <th class="col">Price</th>
+                <th class="col">Method</th>
+                <th class="col">Date</th>
+                <th class="col">status</th>
+                <th class="col">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="col">1</td>
+                <td class="col">abdo</td>
+                <td class="col">200 test</td>
+                <td class="col">cash</td>
+                <td class="col">1/1/2024</td>
+                <td class="col">completed</td>
+                <td class="col">
+                  <button
+                    class="btn btn-secondary"
+                    onclick="showPaymentDetailsModal(1)"
+                  >
+                    View Details
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+            <!-- Payment Details Modal -->
+            <div
+              class="modal fade"
+              id="payment-details"
+              tabindex="-1"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div
+                class="modal-dialog modal-dialog-centered"
+                id="payment-details-modal"
+                style="max-width: 1000px !important ; width: 700px !important"
+              >
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">
+                      Payment Details
+                    </h1>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <form
+                    class="needs-validation"
+                    novalidate
+                    onsubmit="return updatePayment(this)"
+                  >
+                    <div class="modal-body">
+                      <div class="row">
+                        <div class="col-12 col-md-6">
+                          <label for="details-id" class="form-label">ID</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            disabled
+                            id="details-id"
+                          />
+                        </div>
+                        <div class="col-12 col-md-6">
+                          <label for="details-status" class="form-label">Status</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            disabled
+                            id="details-status"
+                          />
+                        </div>
+                      </div>
+                      <div class="mb-3">
+                        <label for="details-user" class="form-label"
+                          >User</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          disabled
+                          id="details-user"
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label for="details-price" class="form-label"
+                          >Price</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          disabled
+                          rows="3"
+                          id="details-price"
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label for="details-type" class="form-label"
+                          >Type</label
+                        >
+                        <div class="mb-3">
+                            <input
+                              type="text"
+                              class="form-control"
+                              disabled
+                              id="details-type"
+                            />
+                        </div>
+                      </div>
+                      <div class="mb-3">
+                        <label for="details-date" class="form-label"
+                          >Date</label
+                        >
+                        <div class="mb-3">
+                            <input
+                              type="text"
+                              class="form-control"
+                              disabled
+                              id="details-date"
+                            />
+                        </div>
+                        <div class="mb-3">
+                            <label for="details-method">Method</label>
+                            <div class="mb-3">
+                              <input type="text" id="details-method" class="form-control" disabled />
+                            </div>
+                        </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- Plan Details Modal -->
+          </table>
+        </main>
       </div>
     </div>
-  </body>
+
+    <script>
+      const showPaymentDetailsModal = (paymentId) => {
+        let payment = payments.filter((payment) => payment.transactionId == paymentId)[0];
+        const paymentsModal = new bootstrap.Modal(
+          document.getElementById("payment-details"),
+          {}
+        );
+        paymentsModal.show();
+
+        document.getElementById("details-id").value = payment.transactionId;
+        document.getElementById("details-status").value = payment.status;
+        document.getElementById("details-user").value = payment.user;
+        document.getElementById("details-price").value = payment.price;
+        document.getElementById("details-type").value = payment.paymentType;
+        document.getElementById("details-date").value =
+          payment.paymentDate;
+        document.getElementById("details-method").value =
+          payment.paymentMethod;
+      };
+    </script>
 </html>
