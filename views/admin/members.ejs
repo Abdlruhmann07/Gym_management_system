@@ -118,30 +118,26 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td class="col">1</td>
-                <td class="col">Abdo</td>
-                <td class="col">Sherif</td>
-                <td class="col">abdosherif</td>
-                <td class="col">dodger@gmail.com</td>
-                <td class="col">01012345678</td>
-                <td class="col">A</td>
-                <td class="col">
-                  <button class="btn btn-secondary" onclick="showMemberModal(1)">View Details</button>
-                </td>
-              </tr>
-              <tr>
-                <td class="col">2</td>
-                <td class="col">Tarek</td>
-                <td class="col">Hassan</td>
-                <td class="col">tarekhassan</td>
-                <td class="col">tarek@gmail.com</td>
-                <td class="col">01068235608</td>
-                <td class="col">B</td>
-                <td class="col">
-                  <button class="btn btn-secondary" onclick="showMemberModal(2)">View Details</button>
-                </td>
-              </tr>
+              <% members.forEach(member => { %>
+                <tr>
+                  <td class="col"><%=member._id%></td>
+                  <td class="col"><%=member.firstname%></td>
+                  <td class="col"><%=member.lastname%></td>
+                  <td class="col"><%=member.username%></td>
+                  <td class="col"><%=member.email%></td>
+                  <td class="col"><%=member.phonenumber%></td>
+                  <td class="col">
+                    <% if (member.membershipPlan) { %>
+                      <%= member.membershipPlan.membershipTitle %>
+                    <% } else { %>
+                      No PLan
+                    <% } %>
+                  </td>
+                  <td class="col">
+                    <button class="btn btn-secondary" onclick="showMemberModal('<%=member._id%>')">View Details</button>
+                  </td>
+                </tr>
+              <% }) %>
             </tbody>
 
             <!-- Member Details Modal -->
@@ -627,19 +623,28 @@
       
       }
 
-      const showMemberModal = (memberId) => {
-        const memberDetailsModal = new bootstrap.Modal(document.getElementById('member-details'), {})
-        const member = members.filter(member => member.id == memberId)[0];
-        memberDetailsModal.show();
-        document.getElementById("id").value = member.id
-        document.getElementById("firstname").value = member.firstname
-        document.getElementById("lastname").value = member.lastname
-        document.getElementById("email").value = member.email
-        document.getElementById("phonenumber").value = member.phonenumber
-        document.getElementById("address").value = member.address
-        document.getElementById("bfd").value = `${member.bfd.getDay()+1}-${member.bfd.getMonth()+1}-${member.bfd.getFullYear()}`
-        document.getElementById("membershipPlan").value = member.membershipPlan
-        document.getElementById("attendance").value = member.attendance
+      const showMemberModal =  (memberId) => {
+        // const member = members.filter(member => member.id == memberId)[0];
+        const member =  fetch(`/api/v1/admin/members/${memberId}`)
+        .then(res => res.json())
+        .then(res => {
+          if(res.state ==='success') {
+            return res.data
+          }
+        }).then(member => {
+          const memberDetailsModal = new bootstrap.Modal(document.getElementById('member-details'), {})
+          memberDetailsModal.show();
+          
+          document.getElementById("id").value = member._id                    
+          document.getElementById("firstname").value = member.firstname
+          document.getElementById("lastname").value = member.lastname
+          document.getElementById("email").value = member.email
+          document.getElementById("phonenumber").value = member.phonenumber
+          document.getElementById("address").value = member.address.city
+          document.getElementById("bfd").value = `${member.bfd.getDay()+1}-${member.bfd.getMonth()+1}-${member.bfd.getFullYear()}`
+          document.getElementById("membershipPlan").value = member.membershipPlan
+          document.getElementById("attendance").value = member.attendance
+        });
       }
     </script>
   </body>
