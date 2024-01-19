@@ -53,48 +53,31 @@
         background-color: var(--bs-gray-700);
       }
     </style>
-    <script>
-      const staff = [
-        {
-          id: 1,
-          firstname: 'Abdo',
-          lastname: 'Sherif',
-          username: 'abdosherif',
-          email: 'abod@gmail.com',
-          phonenumber: '01234556789',
-          address: {
-            city: 'Cairo',
-            street: 'Gardenia'
-          },
-          dateOfBirth: new Date(),
-          role: 'front-desk',
-        }
-      ]
-    </script>
+    
   </head>
   <body>
     <div class="row h-100 d-flex">
       <div class="col-3 flex-grow-1">
         <!-- SIDEBAR -->
         <div class="sidebar p-2 pt-5 h-100">
-          <a href="/admin/dashboard.html">
+          <a href="/api/v1/admin/dashboard">
             <div class="sidebar--page my-1 p-2 fs-5 rounded">
               Dashboard
             </div>
           </a>
-          <a href="/admin/sessions.html">
+          <a href="/api/v1/admin/sessions">
             <div class="sidebar--page my-1 p-2 fs-5 rounded">Sessions</div>
           </a>
-          <a href="/admin/plans.html">
+          <a href="/api/v1/admin/plans">
             <div class="sidebar--page my-1 p-2 fs-5 rounded">Plans</div>
           </a>
-          <a href="/admin/members.html">
-            <div class="sidebar--page my-1 p-2 fs-5 rounded">Memebers</div>
+          <a href="/api/v1/admin/members">
+            <div class="sidebar--page my-1 p-2 fs-5 rounded">Members</div>
           </a>
-          <a href="/admin/staff.html">
+          <a href="/api/v1/admin/staff">
             <div class="sidebar--page active my-1 p-2 fs-5 rounded">Staff</div>
           </a>
-          <a href="/admin/payments.html">
+          <a href="/api/v1/admin/payments">
             <div class="sidebar--page my-1 p-2 fs-5 rounded">Payments</div>
           </a>
         </div>
@@ -117,18 +100,20 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td class="col">1</td>
-                <td class="col">Abdo</td>
-                <td class="col">Sherif</td>
-                <td class="col">abdosherif</td>
-                <td class="col">dodger@gmail.com</td>
-                <td class="col">01012345678</td>
-                <td class="col">Front Desk</td>
-                <td class="col">
-                  <button class="btn btn-secondary" onclick="showStaffModal(1)">View Details</button>
-                </td>
-              </tr>
+              <% employees.forEach(staff => { %>
+                <tr>
+                  <td class="col"><%=staff._id%></td>
+                  <td class="col"><%=staff.firstname%></td>
+                  <td class="col"><%=staff.lastname%></td>
+                  <td class="col"><%=staff.username%></td>
+                  <td class="col"><%=staff.email%></td>
+                  <td class="col"><%=staff.phonenumber%></td>
+                  <td class="col"><%=staff.role%></td>
+                  <td class="col">
+                    <button class="btn btn-secondary" onclick="showStaffModal('<%=staff._id%>')">View Details</button>
+                  </td>
+                </tr>
+              <% }) %>
             </tbody>
 
             <!-- Staff Details Modal -->
@@ -221,6 +206,11 @@
                       </div>
                     </div>
                     <div class="mb-3">
+                      <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" required id="details-username">
+                        <div class="invalid-feedback">Username is required</div>
+                      </div>
                       <label for="address" class="form-label"
                         >Address</label
                       >
@@ -258,7 +248,7 @@
                   <div class="modal-footer">
                     <div class="d-flex justify-content-between w-100">
                         <div>
-                          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="staff-delete">
                             Delete
                           </button>
                         </div>
@@ -364,11 +354,16 @@
                       <div class="invalid-feedback">Phone number is required</div>
                     </div>
                   </div>
+                  <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" required id="new-username">
+                    <div class="invalid-feedback">Username is required</div>
+                  </div>
                   <div class="row mb-3">
                     <div class="col-12 col-md-6">
                       <label for="new-password" class="form-label">Password</label>
                       <input
-                        type="text"
+                        type="password"
                         class="form-control"
                         required
                         id="new-password"
@@ -476,16 +471,17 @@
           email: document.getElementById("new-email").value,
           password: document.getElementById("new-password").value,
           confirmPassword: document.getElementById("new-confirm-password").value,
+          username: document.getElementById("new-username").value,
           phonenumber: document.getElementById("new-phonenumber").value,
           address: document.getElementById("new-address").value,
           dateOfBirth: new Date(document.getElementById("new-bfd").value),
         };
         fetch("/api/v1/admin/staff/add-employee", {
           method: "POST",
+          body: JSON.stringify(payload),
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(payload),
         })
           .then((res) => {
             if (!res || !res.ok || res.status !== 200) {
@@ -521,17 +517,17 @@
       
         };
       
-      const deleteMember = (staffId) => {
+      const deleteStaff = (staffId) => {
         const payload = {
           id: staffId,
         }
 
         fetch(`/api/v1/admin/staff/${staffId}`, {
           method: "DELETE",
+          body: JSON.stringify(payload),
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(payload),
         })
           .then((res) => {
             if (!res || !res.ok || res.status !== 200) {
@@ -548,6 +544,7 @@
                   background: "var(--bs-success)",
                 },
               }).showToast();
+              window.location.reload();
             }
           })
           .catch((err) => {
@@ -567,19 +564,21 @@
       }
 
       const updateStaff = (staffId) => {
-        const id = document.getElementById("id").value = member.id
+        const id = document.getElementById("id").value = staffId
         const firstname = document.getElementById("firstname").value;
         const lastname = document.getElementById("lastname").value;
         const email = document.getElementById("email").value;
         const phonenumber = document.getElementById("phonenumber").value;
+        const username = document.getElementById("details-username").value;
         const address = document.getElementById("address").value;
-        const bfd = document.getElementById("dateOfBirth").value;
+        const bfd = document.getElementById("bfd").value;
         const role = document.getElementById("role").value;
 
         const payload = {
-          id,
+          _id:id,
           firstname,
           lastname,
+          username,
           email,
           phonenumber,
           address,
@@ -634,15 +633,18 @@
         .then(data => {
           const staffDetailsModal = new bootstrap.Modal(document.getElementById('staff-details'), {})
           staffDetailsModal.show();
-          document.getElementById("staff-from").setAttribute('onsubmit', `return updateStaff("${staffId}")`)
+          document.getElementById("staff-form").setAttribute('onsubmit', `return updateStaff("${staffId}")`)
           document.getElementById("staff-delete").setAttribute('onclick', `deleteStaff("${staffId}")`)
-          document.getElementById("id").value = data.id
+          document.getElementById("id").value = data._id
           document.getElementById("firstname").value = data.firstname
           document.getElementById("lastname").value = data.lastname
           document.getElementById("email").value = data.email
           document.getElementById("phonenumber").value = data.phonenumber
-          document.getElementById("address").value = `${data.address.street}-${data.address.city}`
-          document.getElementById("bfd").value = `${data.dateOfBirth.getDay()+1}-${data.dateOfBirth.getMonth()+1}-${data.dateOfBirth.getFullYear()}`
+          document.getElementById("details-username").value = data.username
+          document.getElementById("address").value = data.address
+          const bfd = new Date(data.dateOfBirth);
+          console.log(bfd);
+          document.getElementById("bfd").value = `${bfd.getDay()+1}-${bfd.getMonth()+1}-${bfd.getFullYear()}`
           document.getElementById("role").value = data.role
         })
         .catch((err) => {

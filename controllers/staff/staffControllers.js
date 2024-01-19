@@ -54,8 +54,6 @@ exports.renewPlan = async (req, res) => {
                 user: user._id,
                 paymentType: 'membershipPlan',
                 price: selectedPlan.price,
-                paymentMethod: req.body.method,
-                transactionId: generateTransactionId(),
                 description: selectedPlan.description,
                 status: 'completed'
             })

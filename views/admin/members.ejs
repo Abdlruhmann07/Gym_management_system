@@ -14,34 +14,15 @@
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
       crossorigin="anonymous"
     ></script>
-    <script>
-      const members = [
-        {
-          id: "1",
-          firstname: "Abdo",
-          lastname: "Sherif",
-          username: "abdosherif",
-          email: "abdo@gmail.com",
-          phonenumber: "01012345678",
-          address: "582, Gardenia city",
-          bfd: new Date(),
-          membershipPlan: "A",
-          attendance: "20",
-        },
-        {
-          id: "2",
-          firstname: "Tarek",
-          lastname: "Hassan",
-          username: "tarekhassan",
-          email: "tarek@gmail.com",
-          phonenumber: "01068235608",
-          address: "Zahraa Nasr city",
-          bfd: new Date(),
-          membershipPlan: "B",
-          attendance: "25",
-        },
-      ]
-    </script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
     <title>Members</title>
     <style>
       a {
@@ -169,6 +150,7 @@
                 class="needs-validation"
                 novalidate
                 onsubmit="return updateMember(this)"
+                id="member-form"
               >
                 <div class="modal-body">
                   <div class="mb-3">
@@ -203,6 +185,11 @@
                       />
                       <div class="invalid-feedback">Last Name is required</div>
                     </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" id="username" required>
+                    <div class="invalid-feedback">Username is required</div>
                   </div>
                   <div class="row mb-3">
                     <div class="col-12 col-md-6">
@@ -259,16 +246,6 @@
                       id="membershipPlan"
                     />
                     <div class="invalid-feedback">Membership is required</div>
-                  </div>
-                  <div class="mb-3">
-                    <label for="attendance" class="form-label">Attendance</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      required
-                      id="attendance"
-                    />
-                    <div class="invalid-feedback">Attendance is required</div>
                   </div>
                 <div class="modal-footer">
                   <div class="d-flex justify-content-between w-100">
@@ -382,11 +359,16 @@
                         <div class="invalid-feedback">Phonenumber is required</div>
                       </div>
                     </div>
+                    <div class="mb-3">
+                      <label for="username" class="form-label">Username</label>
+                      <input type="text" class="form-control" required id="new-member-username">
+                      <div class="invalid-feedback">Username is required</div>
+                    </div>
                     <div class="row mb-3">
                       <div class="col-12 col-md-6">
                         <label for="new-member-password" class="form-label">Password</label>
                         <input
-                          type="text"
+                          type="password"
                           class="form-control"
                           required
                           id="new-member-password"
@@ -433,20 +415,9 @@
                       <input
                         type="text"
                         class="form-control"
-                        required
                         id="new-member-membershipPlan"
                       />
                       <div class="invalid-feedback">Membership is required</div>
-                    </div>
-                    <div class="mb-3">
-                      <label for="new-member-attendance" class="form-label">Attendance</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        required
-                        id="new-member-attendance"
-                      />
-                      <div class="invalid-feedback">Attendance is required</div>
                     </div>
                   <div class="modal-footer">
                           <button
@@ -501,16 +472,19 @@
           lastname: document.getElementById("new-member-lastname").value,
           email: document.getElementById("new-member-email").value,
           phonenumber: document.getElementById("new-member-phonenumber").value,
-          phonenumber: document.getElementById("new-member-password").value,
-          phonenumber: document.getElementById("new-member-confirm-password").value,
+          password: document.getElementById("new-member-password").value,
+          confirmPassword: document.getElementById("new-member-confirm-password").value,
+          username: document.getElementById("new-member-username").value,
           address: document.getElementById("new-member-address").value,
-          bfd: document.getElementById("new-member-bfd").value,
+          bfd: new Date(document.getElementById("new-member-bfd").value),
           membershipPlan: document.getElementById("new-member-membershipPlan").value,
-          attendance: document.getElementById("new-member-attendance").value,
         };
         fetch("/api/v1/admin/members/addmember", {
           method: "POST",
           body: JSON.stringify(payload),
+          headers: {
+            'content-type': 'application/json'
+          }
         })
           .then((res) => {
             if (!res || !res.ok || res.status !== 200) {
@@ -552,7 +526,7 @@
         }
 
         fetch(`/api/v1/admin/members/deleteMember/${memberId}`, {
-          method: "POST",
+          method: "DELETE",
           body: JSON.stringify(payload),
         })
           .then((res) => {
@@ -570,6 +544,7 @@
                   background: "var(--bs-success)",
                 },
               }).showToast();
+              window.location.reload();
             }
           })
           .catch((err) => {
@@ -589,31 +564,34 @@
       
       }
 
-      const updateMemeber = (memberId) => {
-        const id = document.getElementById("id").value = member.id
+      const updateMember = (memberId) => {
+        const _id = document.getElementById("id").value = memberId
         const firstname = document.getElementById("firstname").value;
         const lastname = document.getElementById("lastname").value;
         const email = document.getElementById("email").value;
+        const username = document.getElementById("username").value;
         const phonenumber = document.getElementById("phonenumber").value;
         const address = document.getElementById("address").value;
-        const bfd = document.getElementById("bfd").value;
+        const bfd = new Date(document.getElementById("bfd").value);
         const membershipPlan = document.getElementById("membershipPlan").value;
-        const attendance = document.getElementById("attendance").value;
 
         const payload = {
-          id,
+          _id,
           firstname,
           lastname,
           email,
+          username,
           phonenumber,
           address,
           bfd,
           membershipPlan,
-          attendance
         }
         fetch(`/api/v1/admin/members/updateMember/${memberId}`, {
-          method: "POST",
+          method: "put",
           body: JSON.stringify(payload),
+          headers: {
+            'content-type': 'application/json'
+          }
         })
           .then((res) => {
             if (!res || !res.ok || res.status !== 200) {
@@ -630,6 +608,7 @@
                   background: "var(--bs-success)",
                 },
               }).showToast();
+              window.location.reload();
             }
           })
           .catch((err) => {
@@ -651,13 +630,14 @@
 
       const showMemberModal =  (memberId) => {
         // const member = members.filter(member => member.id == memberId)[0];
-        const member =  fetch(`/api/v1/admin/members/${memberId}`)
+        fetch(`/api/v1/admin/members/${memberId}`)
         .then(res => res.json())
         .then(res => {
           if(res.state ==='success') {
+            console.log({ res: res.data});
             return res.data
           }
-        }).then(member => {
+        }).then( member => {
           const memberDetailsModal = new bootstrap.Modal(document.getElementById('member-details'), {})
           memberDetailsModal.show();
           
@@ -668,11 +648,13 @@
           document.getElementById("firstname").value = member.firstname
           document.getElementById("lastname").value = member.lastname
           document.getElementById("email").value = member.email
+          document.getElementById("username").value = member.username
           document.getElementById("phonenumber").value = member.phonenumber
-          document.getElementById("address").value = member.address.city
-          document.getElementById("bfd").value = `${member.bfd.getDay()+1}-${member.bfd.getMonth()+1}-${member.bfd.getFullYear()}`
-          document.getElementById("membershipPlan").value = member.membershipPlan
-          document.getElementById("attendance").value = member.attendance
+          document.getElementById("address").value = member.address
+          const bfd = new Date(member.bfd);
+          console.log(bfd);
+          document.getElementById("bfd").value = `${bfd.getDay()+1}-${bfd.getMonth()+1}-${bfd.getFullYear()}`
+          document.getElementById("membershipPlan").value = member.membershipPlan ? member.membershipPlan : ""
         });
       }
     </script>

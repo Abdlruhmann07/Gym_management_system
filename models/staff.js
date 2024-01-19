@@ -47,12 +47,8 @@ const staffSchema = new Schema({
         required: true
     },
     address: {
-        city: {
-            type: String,
-        },
-        st: {
-            type: String,
-        },
+        type: String,
+        required: true
     },
     dateOfBirth: {
         type: Date,

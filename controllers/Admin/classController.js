@@ -85,7 +85,7 @@ exports.updateClass = async (req, res) => {
         }
         res.status(200).json({ state: 'success', data: updatedClass });
     } catch (err) {
-        res.state(500).json({ state: 'error', message: err.message });
+        res.status(500).json({ state: 'error', message: err.message });
     }
 };//
 // Delete existing class Delete PRIVATE

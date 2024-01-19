@@ -6,16 +6,18 @@ const Employee = require('../../models/staff');
 exports.addEmployee = async (req, res) => {
     try {
         const {
-            firstname, lastname, age, address, phone, payroll, photo,
+            firstname, lastname,email,password,confirmPassword,username,phonenumber, address, dateOfBirth
         } = req.body;
         const employee = new Employee({
             firstname,
             lastname,
-            age,
+            email,
+            password,
+            confirmPassword,
+            username,
+            phonenumber,
             address,
-            phone,
-            payroll,
-            photo
+            dateOfBirth
         });
         await employee.save();
         res.status(200).json({ state: 'success', data: employee });
@@ -55,7 +57,7 @@ exports.viewSingleEmployee = async (req, res) => {
     try {
         const employee = await Employee.findById(id);
         if (!employee) { return res.status(404).json({ message: 'No employee with this id' }) }
-        res.status(201).json({ state: 'success', data: employee })
+        res.status(200).json({ state: 'success', data: employee })
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
     }

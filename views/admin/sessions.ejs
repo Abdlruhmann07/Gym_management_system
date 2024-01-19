@@ -353,6 +353,7 @@
                   class="needs-validation"
                   novalidate
                   onsubmit="return updateSession(this)"
+                  id="session-form"
                 >
                   <div class="modal-body">
                     <div class="row mb-3">
@@ -570,9 +571,64 @@
           });
       };
       
-      const updateSession = () => {
+      const updateSession = (sessionId) => {
         // api/v1/sessions/updateclass/:id
         // method put
+        const name = document.getElementById('session-details-name').value 
+        const classTrainer = document.getElementById('session-details-trainerID').value 
+        const price =  document.getElementById('session-details-price').value 
+        const noOfSessions=  document.getElementById('session-details-sessionsNo').value 
+        const description =  document.getElementById('session-details-description').value 
+        const startDate =  document.getElementById('session-details-start').value 
+        const endDate =   document.getElementById('session-details-end').value 
+        // 
+        const payload = {
+          name ,
+          classTrainer ,
+          price ,
+          noOfSessions ,
+          description ,
+          startDate ,
+          endDate ,
+        }
+        fetch(`/api/v1/admin/sessions/updateclass/${sessionId}`, {
+          method : 'put',
+          body: JSON.stringify(payload),
+          headers : {
+            'content-type': 'application/json'
+          }
+        }).then((res) => {
+            if (!res || !res.ok || res.status !== 200) {
+              throw new Error("Error");
+            } else {
+              Toastify({
+                text: "Session Updated Successfully",
+                duration: 3000,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: "center", // `left`, `center` or `right`
+                stopOnFocus: false, // Prevents dismissing of toast on hover
+                style: {
+                  background: "var(--bs-success)",
+                },
+              }).showToast();
+              window.location.reload();
+            }
+          })
+          .catch((err) => {
+            Toastify({
+              text: "Something went wrong",
+              duration: 3000,
+              close: true,
+              gravity: "top", // `top` or `bottom`
+              position: "center", // `left`, `center` or `right`
+              stopOnFocus: false,
+              style: {
+                background: "var(--bs-danger)",
+              },
+            }).showToast();
+            console.log(err);
+          });
       }
 
       const openSessionDetailsModal = (sessionId) => {
@@ -586,6 +642,7 @@
         .then(session => {
           const sessionDetailsModal = new bootstrap.Modal(document.getElementById('sessionDetails'), {})
           sessionDetailsModal.show();
+          document.getElementById("session-form").setAttribute('onsubmit', `return updateSession("${sessionId}")`);
           document.getElementById('session-details-name').value = session.name;
           document.getElementById('session-details-trainerID').value = session.classTrainer;
           document.getElementById('session-details-price').value = session.price;

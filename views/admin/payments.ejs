@@ -268,8 +268,8 @@
         document.getElementById("details-user").value = payment.user;
         document.getElementById("details-price").value = payment.price;
         document.getElementById("details-type").value = payment.paymentType;
-        document.getElementById("details-date").value =
-          payment.paymentDate;
+        const date = new Date(payment.paymentDate);
+        document.getElementById("details-date").value = `${date.getDay() + 1}-${date.getMonth()+1}-${date.getYear()}`;
         document.getElementById("details-method").value =
           payment.paymentMethod;
         })

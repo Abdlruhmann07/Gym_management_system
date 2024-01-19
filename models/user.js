@@ -53,16 +53,11 @@ const userSchema = new Schema({
         required: true,
     },
     address: {
-        street: {
-            type: String,
-        },
-        city: {
-            type: String,
-        },
+        type: String,
+        required: true,
     },
     bfd: {
         type: Date,
-        default: Date.now()
     },
     authToken: {
         type: String,
@@ -80,7 +75,7 @@ const userSchema = new Schema({
         isActive: {
             type: Boolean,
             default: true
-        }, 
+        },
     },
     payments: [
         {

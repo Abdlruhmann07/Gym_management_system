@@ -9,8 +9,15 @@ const generateTransactionId = require('../../helpers/generateTransactionId');
 // members EndPoints:-
 // Add new member 
 exports.addMember = async (req, res) => {
+    console.log(req.body)
     try {
         const myObj = req.body
+        if(myObj.membershipPlan === '') {
+            delete myObj.membershipPlan;
+        }
+        if(myObj.attendance === '') {
+            delete myObj.attendance;
+        }
         const file = req.file
         if (file) {
             myObj.photo = file.filename;
@@ -53,28 +60,28 @@ exports.viewSingleMember = async (req, res) => {
     try {
         const id = req.params.id;
         const member = await User.findById(id);
-        if (member.role !== 'member') { res.status(404).json('chosen member should be a member') }
         if (!member) {
-            res.status(401).json('no member with this id')
-        } else {
-            res.json({state: 'success' , data: member})
-            // res.status(200).json({ state: 'success', member });
+            return res.status(404).json('no member with this id')
         }
+        return res.json({ state: 'success', data: member });
     } catch (err) {
-        res.status(500).json({ state: 'error', message: err.message })
+        return res.status(500).json({ state: 'error', message: err.message })
     }
-
 }
 // update single member
 exports.updateSingleMember = async (req, res) => {
     try {
         const id = req.params.id;
+        if(req.body.membershipPlan === '') {
+            delete req.body.membershipPlan
+        }
         const updatedMember = await User.findByIdAndUpdate(id, req.body, { new: true });
         if (!updatedMember) {
             res.status(404).json({ state: 'error', message: 'no member found with this id' })
         }
-        res.status(201).json({ state: 'success', data: updatedMember })
+        res.status(200).json({ state: 'success', data: updatedMember })
     } catch (err) {
+        console.log(err.message)
         res.status(500).json({ state: 'error', message: err.message })
     }
 }
@@ -86,7 +93,7 @@ exports.deleteMember = async (req, res) => {
         if (!deletedMember) {
             res.status(401).json({ message: 'no user found with this id' })
         }
-        res.status(201).json({ state: 'success', deletedMember: deletedMember })
+        res.status(200).json({ state: 'success', deletedMember: deletedMember })
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message })
     }
@@ -197,7 +204,7 @@ exports.asignMemberToPlan = async (req, res) => {
 
         // Save the updated user and plan
         await user.save({ validateBeforeSave: false });
-        return res.status(200).json({state: 'success'});
+        return res.status(200).json({ state: 'success' });
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message })
     }
