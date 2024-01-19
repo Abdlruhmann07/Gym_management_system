@@ -273,7 +273,7 @@
                 <div class="modal-footer">
                   <div class="d-flex justify-content-between w-100">
                       <div>
-                        <button type="submit" class="btn btn-danger">
+                        <button type="button" class="btn btn-danger" id="member-delete">
                           Delete
                         </button>
                       </div>
@@ -331,7 +331,7 @@
                 <form
                   class="needs-validation"
                   novalidate
-                  onsubmit="return addMember(this)"
+                  onsubmit="return addMember()"
                 >
                   <div class="modal-body">
                     <div class="row mb-3">
@@ -380,6 +380,30 @@
                           id="new-member-phonenumber"
                         />
                         <div class="invalid-feedback">Phonenumber is required</div>
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-12 col-md-6">
+                        <label for="new-member-password" class="form-label">Password</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          required
+                          id="new-member-password"
+                        />
+                        <div class="invalid-feedback">Password is required</div>
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <label for="new-member-confirm-password" class="form-label"
+                          >Confirm Password</label
+                        >
+                        <input
+                          type="password"
+                          class="form-control"
+                          required
+                          id="new-member-confirm-password"
+                        />
+                        <div class="invalid-feedback">Confirm Password is required</div>
                       </div>
                     </div>
                     <div class="mb-3">
@@ -477,6 +501,8 @@
           lastname: document.getElementById("new-member-lastname").value,
           email: document.getElementById("new-member-email").value,
           phonenumber: document.getElementById("new-member-phonenumber").value,
+          phonenumber: document.getElementById("new-member-password").value,
+          phonenumber: document.getElementById("new-member-confirm-password").value,
           address: document.getElementById("new-member-address").value,
           bfd: document.getElementById("new-member-bfd").value,
           membershipPlan: document.getElementById("new-member-membershipPlan").value,
@@ -635,6 +661,9 @@
           const memberDetailsModal = new bootstrap.Modal(document.getElementById('member-details'), {})
           memberDetailsModal.show();
           
+          document.getElementById("member-form").setAttribute('onsubmit', `return updateMember("${memberId}")`);
+          document.getElementById("member-delete").setAttribute('onclick', `deleteMember("${memberId}")`);
+
           document.getElementById("id").value = member._id                    
           document.getElementById("firstname").value = member.firstname
           document.getElementById("lastname").value = member.lastname

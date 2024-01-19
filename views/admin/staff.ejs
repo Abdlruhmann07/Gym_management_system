@@ -157,9 +157,10 @@
                   ></button>
                 </div>
                 <form
+                  id="staff-form"
                   class="needs-validation"
                   novalidate
-                  onsubmit="return updateStaff(this)"
+                  onsubmit=""
                 >
                   <div class="modal-body">
                     <div class="mb-3">
@@ -257,7 +258,7 @@
                   <div class="modal-footer">
                     <div class="d-flex justify-content-between w-100">
                         <div>
-                          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="deleteStaff(1)">
+                          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
                             Delete
                           </button>
                         </div>
@@ -312,26 +313,17 @@
               <form
                 class="needs-validation"
                 novalidate
-                onsubmit="return updateStaff(this)"
+                onsubmit="return addStaff()"
               >
                 <div class="modal-body">
-                  <div class="mb-3">
-                    <label for="id" class="form-label">ID</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      disabled
-                      id="id"
-                    />
-                  </div>
                   <div class="row mb-3">
                     <div class="col-12 col-md-6">
-                      <label for="firstname" class="form-label">First Name</label>
+                      <label for="new-firstname" class="form-label">First Name</label>
                       <input
                         type="text"
                         class="form-control"
                         required
-                        id="firstname"
+                        id="new-firstname"
                       />
                       <div class="invalid-feedback">First Name is required</div>
                     </div>
@@ -343,90 +335,106 @@
                         type="text"
                         class="form-control"
                         required
-                        id="lastname"
+                        id="new-lastname"
                       />
                       <div class="invalid-feedback">Last Name is required</div>
                     </div>
                   </div>
                   <div class="row mb-3">
                     <div class="col-12 col-md-6">
-                      <label for="email" class="form-label">Email</label>
+                      <label for="new-email" class="form-label">Email</label>
                       <input
                         type="text"
                         class="form-control"
                         required
-                        id="email"
+                        id="new-email"
                       />
                       <div class="invalid-feedback">Email is required</div>
                     </div>
                     <div class="col-12 col-md-6">
-                      <label for="phonenumber" class="form-label"
+                      <label for="new-phonenumber" class="form-label"
                         >Phone Number</label
                       >
                       <input
                         type="text"
                         class="form-control"
                         required
-                        id="phonenumber"
+                        id="new-phonenumber"
                       />
-                      <div class="invalid-feedback">Phonenumber is required</div>
+                      <div class="invalid-feedback">Phone number is required</div>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-12 col-md-6">
+                      <label for="new-password" class="form-label">Password</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        required
+                        id="new-password"
+                      />
+                      <div class="invalid-feedback">Password is required</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="new-confirm-password" class="form-label"
+                        >Confirm Password</label
+                      >
+                      <input
+                        type="password"
+                        class="form-control"
+                        required
+                        id="new-confirm-password"
+                      />
+                      <div class="invalid-feedback">Confirm Password is required</div>
                     </div>
                   </div>
                   <div class="mb-3">
-                    <label for="address" class="form-label"
+                    <label for="new-address" class="form-label"
                       >Address</label
                     >
                     <input
                       type="text"
                       class="form-control"
                       required
-                      id="address"
+                      id="new-address"
                     />
                     <div class="invalid-feedback">Address is required</div>
                   </div>
                   <div class="mb-3">
-                      <label for="bfd" class="form-label">Birthdate</label>
+                      <label for="new-bfd" class="form-label">Birthdate</label>
                       <input
                         type="text"
                         class="form-control"
                         required
-                        id="bfd"
+                        id="new-bfd"
                       />
                       <div class="invalid-feedback">Birthdate is required</div>
                   </div>
                   <div class="mb-3">
-                    <label for="role" class="form-label">Role</label>
+                    <label for="new-role" class="form-label">Role</label>
                     <select
+
                       type="text"
                       class="form-control"
                       required
-                      id="role"
+                      id="new-role"
                     >
                     <option value="front-desk" selected>Front Desk</option>
-                    <option value="front-desk">Manager</option>
+                    <option value="manager">Manager</option>
                   </select>
                     <div class="invalid-feedback">Role is required</div>
                   </div>
                 <div class="modal-footer">
-                  <div class="d-flex justify-content-between w-100">
-                      <div>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="deleteStaff(1)">
-                          Delete
-                        </button>
-                      </div>
-                      <div>
-                        <button
-                          type="button"
-                          class="btn btn-secondary"
-                          data-bs-dismiss="modal"
-                        >
-                          Close
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                          Update
-                        </button>
-                      </div>
-                  </div>
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                      Create
+                    </button>
                 </div>
               </form>
             </div>
@@ -463,13 +471,14 @@
 
       const addStaff = () => {
         const payload = {
-          firstname: document.getElementById("new-staff-firstname").value,
-          lastname: document.getElementById("new-staff-lastname").value,
-          email: document.getElementById("new-staff-email").value,
-          phonenumber: document.getElementById("new-staff-phonenumber").value,
-          address: document.getElementById("new-staff-address").value,
-          bfd: document.getElementById("new-staff-bfd").value,
-          attendance: document.getElementById("new-staff-attendance").value,
+          firstname: document.getElementById("new-firstname").value,
+          lastname: document.getElementById("new-lastname").value,
+          email: document.getElementById("new-email").value,
+          password: document.getElementById("new-password").value,
+          confirmPassword: document.getElementById("new-confirm-password").value,
+          phonenumber: document.getElementById("new-phonenumber").value,
+          address: document.getElementById("new-address").value,
+          dateOfBirth: new Date(document.getElementById("new-bfd").value),
         };
         fetch("/api/v1/admin/staff/add-employee", {
           method: "POST",
@@ -566,7 +575,6 @@
         const address = document.getElementById("address").value;
         const bfd = document.getElementById("dateOfBirth").value;
         const role = document.getElementById("role").value;
-        const attendance = document.getElementById("attendance").value;
 
         const payload = {
           id,
@@ -577,7 +585,6 @@
           address,
           bfd,
           role,
-          attendance
         }
         fetch(`/api/v1/admin/staff/${staffId}`, {
           method: "PUT",
@@ -627,6 +634,8 @@
         .then(data => {
           const staffDetailsModal = new bootstrap.Modal(document.getElementById('staff-details'), {})
           staffDetailsModal.show();
+          document.getElementById("staff-from").setAttribute('onsubmit', `return updateStaff("${staffId}")`)
+          document.getElementById("staff-delete").setAttribute('onclick', `deleteStaff("${staffId}")`)
           document.getElementById("id").value = data.id
           document.getElementById("firstname").value = data.firstname
           document.getElementById("lastname").value = data.lastname
@@ -635,7 +644,6 @@
           document.getElementById("address").value = `${data.address.street}-${data.address.city}`
           document.getElementById("bfd").value = `${data.dateOfBirth.getDay()+1}-${data.dateOfBirth.getMonth()+1}-${data.dateOfBirth.getFullYear()}`
           document.getElementById("role").value = data.role
-          document.getElementById("attendance").value = data.attendance
         })
         .catch((err) => {
           Toastify({
