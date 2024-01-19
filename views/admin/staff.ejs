@@ -14,6 +14,15 @@
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
       crossorigin="anonymous"
     ></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
     <title>Staff</title>
     <style>
       a {
@@ -44,38 +53,605 @@
         background-color: var(--bs-gray-700);
       }
     </style>
+    <script>
+      const staff = [
+        {
+          id: 1,
+          firstname: 'Abdo',
+          lastname: 'Sherif',
+          username: 'abdosherif',
+          email: 'abod@gmail.com',
+          phonenumber: '01234556789',
+          address: {
+            city: 'Cairo',
+            street: 'Gardenia'
+          },
+          dateOfBirth: new Date(),
+          role: 'front-desk',
+        }
+      ]
+    </script>
   </head>
   <body>
     <div class="row h-100 d-flex">
       <div class="col-3 flex-grow-1">
         <!-- SIDEBAR -->
         <div class="sidebar p-2 pt-5 h-100">
-          <a href="/api/v1/admin/dashboard">
+          <a href="/admin/dashboard.html">
             <div class="sidebar--page my-1 p-2 fs-5 rounded">
               Dashboard
             </div>
           </a>
-          <a href="/api/v1/admin/sessions">
+          <a href="/admin/sessions.html">
             <div class="sidebar--page my-1 p-2 fs-5 rounded">Sessions</div>
           </a>
-          <a href="/api/v1/admin/plans">
+          <a href="/admin/plans.html">
             <div class="sidebar--page my-1 p-2 fs-5 rounded">Plans</div>
           </a>
-          <a href="/api/v1/admin/members">
+          <a href="/admin/members.html">
             <div class="sidebar--page my-1 p-2 fs-5 rounded">Memebers</div>
           </a>
-          <a href="/api/v1/admin/staff">
+          <a href="/admin/staff.html">
             <div class="sidebar--page active my-1 p-2 fs-5 rounded">Staff</div>
           </a>
-          <a href="/api/v1/admin/payments">
+          <a href="/admin/payments.html">
             <div class="sidebar--page my-1 p-2 fs-5 rounded">Payments</div>
           </a>
         </div>
         <!-- SIDEBAR -->
       </div>
       <div class="col-9 flex-grow-1">
-        <main></main>
+        <main class="p-2 pt-5 h-100">
+          <h2 class="mb-3">Staff</h2>
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th class="col">ID</th>
+                <th class="col">First Name</th>
+                <th class="col">Last Name</th>
+                <th class="col">Username</th>
+                <th class="col">email</th>
+                <th class="col">Phone Number</th>
+                <th class="col">role</th>
+                <th class="col">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="col">1</td>
+                <td class="col">Abdo</td>
+                <td class="col">Sherif</td>
+                <td class="col">abdosherif</td>
+                <td class="col">dodger@gmail.com</td>
+                <td class="col">01012345678</td>
+                <td class="col">Front Desk</td>
+                <td class="col">
+                  <button class="btn btn-secondary" onclick="showStaffModal(1)">View Details</button>
+                </td>
+              </tr>
+            </tbody>
+
+            <!-- Staff Details Modal -->
+            <div
+            class="modal fade"
+            id="staff-details"
+            tabindex="-1"
+            aria-labelledby="staff-details-modal"
+            aria-hidden="true"
+          >
+            <div
+              class="modal-dialog modal-dialog-centered"
+              id="staff-details-modal"
+              style="max-width: 1000px !important ; width: 700px !important"
+            >
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="staff-details-modal">
+                    Staff Details
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <form
+                  class="needs-validation"
+                  novalidate
+                  onsubmit="return updateStaff(this)"
+                >
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label for="id" class="form-label">ID</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        disabled
+                        id="id"
+                      />
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-12 col-md-6">
+                        <label for="firstname" class="form-label">First Name</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          required
+                          id="firstname"
+                        />
+                        <div class="invalid-feedback">First Name is required</div>
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <label for="firstname" class="form-label"
+                          >Last Name</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          required
+                          id="lastname"
+                        />
+                        <div class="invalid-feedback">Last Name is required</div>
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-12 col-md-6">
+                        <label for="email" class="form-label">Email</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          required
+                          id="email"
+                        />
+                        <div class="invalid-feedback">Email is required</div>
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <label for="phonenumber" class="form-label"
+                          >Phone Number</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          required
+                          id="phonenumber"
+                        />
+                        <div class="invalid-feedback">Phonenumber is required</div>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="address" class="form-label"
+                        >Address</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        required
+                        id="address"
+                      />
+                      <div class="invalid-feedback">Address is required</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="bfd" class="form-label">Birthdate</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          required
+                          id="bfd"
+                        />
+                        <div class="invalid-feedback">Birthdate is required</div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="role" class="form-label">Role</label>
+                      <select
+                        type="text"
+                        class="form-control"
+                        required
+                        id="role"
+                      >
+                      <option value="front-desk" selected>Front Desk</option>
+                      <option value="front-desk">Manager</option>
+                    </select>
+                      <div class="invalid-feedback">Role is required</div>
+                    </div>
+                  <div class="modal-footer">
+                    <div class="d-flex justify-content-between w-100">
+                        <div>
+                          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="deleteStaff(1)">
+                            Delete
+                          </button>
+                        </div>
+                        <div>
+                          <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                          >
+                            Close
+                          </button>
+                          <button type="submit" class="btn btn-primary">
+                            Update
+                          </button>
+                        </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            </div>
+            <!-- Staff Details Modal -->
+          </table>
+          <button class="btn btn-primary" data-bs-toggle="modal"
+          data-bs-target="#new-staff">New Staff</button>
+
+          <!-- New Staff Modal -->
+          <div
+          class="modal fade"
+          id="new-staff"
+          tabindex="-1"
+          aria-labelledby="member-details-modal"
+          aria-hidden="true"
+        >
+          <div
+            class="modal-dialog modal-dialog-centered"
+            id="new-staff-modal"
+            style="max-width: 1000px !important ; width: 700px !important"
+          >
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="member-details-modal">
+                  Staff Details
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <form
+                class="needs-validation"
+                novalidate
+                onsubmit="return updateStaff(this)"
+              >
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label for="id" class="form-label">ID</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      disabled
+                      id="id"
+                    />
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-12 col-md-6">
+                      <label for="firstname" class="form-label">First Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        required
+                        id="firstname"
+                      />
+                      <div class="invalid-feedback">First Name is required</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="firstname" class="form-label"
+                        >Last Name</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        required
+                        id="lastname"
+                      />
+                      <div class="invalid-feedback">Last Name is required</div>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-12 col-md-6">
+                      <label for="email" class="form-label">Email</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        required
+                        id="email"
+                      />
+                      <div class="invalid-feedback">Email is required</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="phonenumber" class="form-label"
+                        >Phone Number</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        required
+                        id="phonenumber"
+                      />
+                      <div class="invalid-feedback">Phonenumber is required</div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="address" class="form-label"
+                      >Address</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      required
+                      id="address"
+                    />
+                    <div class="invalid-feedback">Address is required</div>
+                  </div>
+                  <div class="mb-3">
+                      <label for="bfd" class="form-label">Birthdate</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        required
+                        id="bfd"
+                      />
+                      <div class="invalid-feedback">Birthdate is required</div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <select
+                      type="text"
+                      class="form-control"
+                      required
+                      id="role"
+                    >
+                    <option value="front-desk" selected>Front Desk</option>
+                    <option value="front-desk">Manager</option>
+                  </select>
+                    <div class="invalid-feedback">Role is required</div>
+                  </div>
+                <div class="modal-footer">
+                  <div class="d-flex justify-content-between w-100">
+                      <div>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="deleteStaff(1)">
+                          Delete
+                        </button>
+                      </div>
+                      <div>
+                        <button
+                          type="button"
+                          class="btn btn-secondary"
+                          data-bs-dismiss="modal"
+                        >
+                          Close
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                          Update
+                        </button>
+                      </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          </div>
+          <!-- New Staff Modal -->
+        </main>
       </div>
     </div>
+
+    <script>
+      (() => {
+        "use strict";
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        const forms = document.querySelectorAll(".needs-validation");
+
+        // Loop over them and prevent submission
+        Array.from(forms).forEach((form) => {
+          form.addEventListener(
+            "submit",
+            (event) => {
+              if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+
+              form.classList.add("was-validated");
+            },
+            false
+          );
+        });
+      })();
+
+      const addStaff = () => {
+        const payload = {
+          firstname: document.getElementById("new-staff-firstname").value,
+          lastname: document.getElementById("new-staff-lastname").value,
+          email: document.getElementById("new-staff-email").value,
+          phonenumber: document.getElementById("new-staff-phonenumber").value,
+          address: document.getElementById("new-staff-address").value,
+          bfd: document.getElementById("new-staff-bfd").value,
+          attendance: document.getElementById("new-staff-attendance").value,
+        };
+        fetch("/api/v1/admin/staff/add-employee", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload),
+        })
+          .then((res) => {
+            if (!res || !res.ok || res.status !== 200) {
+              throw new Error("Error");
+            } else {
+              Toastify({
+                text: "Staff Created Successfully",
+                duration: 3000,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: "center", // `left`, `center` or `right`
+                stopOnFocus: false, // Prevents dismissing of toast on hover
+                style: {
+                  background: "var(--bs-success)",
+                },
+              }).showToast();
+            }
+          })
+          .catch((err) => {
+            Toastify({
+              text: "Something went wrong",
+              duration: 3000,
+              close: true,
+              gravity: "top", // `top` or `bottom`
+              position: "center", // `left`, `center` or `right`
+              stopOnFocus: false,
+              style: {
+                background: "var(--bs-danger)",
+              },
+            }).showToast();
+            console.log(err);
+          });
+      
+        };
+      
+      const deleteMember = (staffId) => {
+        const payload = {
+          id: staffId,
+        }
+
+        fetch(`/api/v1/admin/staff/${staffId}`, {
+          method: "DELETE",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload),
+        })
+          .then((res) => {
+            if (!res || !res.ok || res.status !== 200) {
+              throw new Error("Error");
+            } else {
+              Toastify({
+                text: "Staff Deleted Successfully",
+                duration: 3000,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: "center", // `left`, `center` or `right`
+                stopOnFocus: false, // Prevents dismissing of toast on hover
+                style: {
+                  background: "var(--bs-success)",
+                },
+              }).showToast();
+            }
+          })
+          .catch((err) => {
+            Toastify({
+              text: "Something went wrong",
+              duration: 3000,
+              close: true,
+              gravity: "top", // `top` or `bottom`
+              position: "center", // `left`, `center` or `right`
+              stopOnFocus: false,
+              style: {
+                background: "var(--bs-danger)",
+              },
+            }).showToast();
+            console.log(err);
+          });
+      }
+
+      const updateStaff = (staffId) => {
+        const id = document.getElementById("id").value = member.id
+        const firstname = document.getElementById("firstname").value;
+        const lastname = document.getElementById("lastname").value;
+        const email = document.getElementById("email").value;
+        const phonenumber = document.getElementById("phonenumber").value;
+        const address = document.getElementById("address").value;
+        const bfd = document.getElementById("dateOfBirth").value;
+        const role = document.getElementById("role").value;
+        const attendance = document.getElementById("attendance").value;
+
+        const payload = {
+          id,
+          firstname,
+          lastname,
+          email,
+          phonenumber,
+          address,
+          bfd,
+          role,
+          attendance
+        }
+        fetch(`/api/v1/admin/staff/${staffId}`, {
+          method: "PUT",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload),
+        })
+          .then((res) => {
+            if (!res || !res.ok || res.status !== 200) {
+              throw new Error("Error");
+            } else {
+              Toastify({
+                text: "Staff Updated Successfully",
+                duration: 3000,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: "center", // `left`, `center` or `right`
+                stopOnFocus: false, // Prevents dismissing of toast on hover
+                style: {
+                  background: "var(--bs-success)",
+                },
+              }).showToast();
+            }
+          })
+          .catch((err) => {
+            Toastify({
+              text: "Something went wrong",
+              duration: 3000,
+              close: true,
+              gravity: "top", // `top` or `bottom`
+              position: "center", // `left`, `center` or `right`
+              stopOnFocus: false,
+              style: {
+                background: "var(--bs-danger)",
+              },
+            }).showToast();
+            console.log(err);
+          });
+      
+      }
+
+      const showStaffModal = (staffId) => {
+        fetch(`/api/v1/admin/staff/${staffId}`)
+        .then(res => res.json())
+        .then(body => body.data)
+        .then(data => {
+          const staffDetailsModal = new bootstrap.Modal(document.getElementById('staff-details'), {})
+          staffDetailsModal.show();
+          document.getElementById("id").value = data.id
+          document.getElementById("firstname").value = data.firstname
+          document.getElementById("lastname").value = data.lastname
+          document.getElementById("email").value = data.email
+          document.getElementById("phonenumber").value = data.phonenumber
+          document.getElementById("address").value = `${data.address.street}-${data.address.city}`
+          document.getElementById("bfd").value = `${data.dateOfBirth.getDay()+1}-${data.dateOfBirth.getMonth()+1}-${data.dateOfBirth.getFullYear()}`
+          document.getElementById("role").value = data.role
+          document.getElementById("attendance").value = data.attendance
+        })
+        .catch((err) => {
+          Toastify({
+            text: "Something went wrong",
+            duration: 3000,
+            close: true,
+            gravity: "top", // `top` or `bottom`
+            position: "center", // `left`, `center` or `right`
+            stopOnFocus: false,
+            style: {
+              background: "var(--bs-danger)",
+            },
+          }).showToast();
+          console.log(err);
+        });
+      }
+    </script>
   </body>
 </html>
