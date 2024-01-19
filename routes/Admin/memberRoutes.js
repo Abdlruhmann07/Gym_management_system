@@ -25,7 +25,7 @@ router.put('/updateMember/:id', updateSingleMember) // tested
 router.get('/:id/view-member-attendance', viewMemberAttendance) // 
 router.get('/:id/available-sessions', viewAvailableClassesToJoin)
 router.get('/:id/available-plans', viewAvailablePlans)
-router.post('/:memberId/:planId/sign-member-to-plan', asignMemberToPlan) //
+router.post('/:userId/:planId/sign-member-to-plan', asignMemberToPlan) //
 router.post('/:memberId/:sessionId/sign-member-to-class', asignMemberToClass) // tested
 router.get('/:id/view-member-attendance', viewMemberAttendance)
 

@@ -141,8 +141,8 @@ exports.viewAvailablePlans = async (req, res) => {
 }
 // subscribe member to plan
 exports.asignMemberToPlan = async (req, res) => {
-    const userId = req.body;
-    const planId = req.body;
+    const userId = req.params.userId;
+    const planId = req.params.planId;
     // find the selected membership
     try {
         const selectedPlan = await Membership.findById(planId);
@@ -196,8 +196,8 @@ exports.asignMemberToPlan = async (req, res) => {
         user.subscription.daysLeft = daysLeft;
 
         // Save the updated user and plan
-        await user.save({ validateBeforeSave: true });
-        return res.status(200)
+        await user.save({ validateBeforeSave: false });
+        return res.status(200).json({state: 'success'});
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message })
     }
