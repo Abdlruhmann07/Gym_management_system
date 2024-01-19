@@ -100,28 +100,36 @@
                 <th class="col">User</th>
                 <th class="col">Price</th>
                 <th class="col">Method</th>
+                <th class="col">type</th>
                 <th class="col">Date</th>
                 <th class="col">status</th>
                 <th class="col">Details</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td class="col">1</td>
-                <td class="col">abdo</td>
-                <td class="col">200 test</td>
-                <td class="col">cash</td>
-                <td class="col">1/1/2024</td>
-                <td class="col">completed</td>
-                <td class="col">
-                  <button
-                    class="btn btn-secondary"
-                    onclick="showPaymentDetailsModal(1)"
-                  >
-                    View Details
-                  </button>
-                </td>
-              </tr>
+              <% payments.forEach(payment => { %>
+                <tr>
+                  <td class="col"><%=payment._id%></td>
+                  <td class="col"><% if (payment.user) { %>
+                    <%= payment.user.username %>
+                  <% } else { %>
+                    No User
+                  <% } %></td>
+                  <td class="col"><%=payment.price%></td>
+                  <td class="col"><%=payment.paymentMethod%></td>
+                  <td class="col"><%=payment.paymentType%></td>
+                  <td class="col"><%=payment.paymentDate.toLocaleDateString('en-US')%></td>
+                  <td class="col"><%=payment.status%></td>
+                  <td class="col">
+                    <button
+                      class="btn btn-secondary"
+                      onclick="showPaymentDetailsModal('<%= payment._id%>')"
+                    >
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              <% }) %>
             </tbody>
             <!-- Payment Details Modal -->
             <div
@@ -241,14 +249,21 @@
 
     <script>
       const showPaymentDetailsModal = (paymentId) => {
-        let payment = payments.filter((payment) => payment.transactionId == paymentId)[0];
-        const paymentsModal = new bootstrap.Modal(
+        // let payment = payments.filter((payment) => payment.transactionId == paymentId)[0];
+        fetch(`/api/v1/admin/payments/${paymentId}`)
+        .then(res => res.json())
+        .then(res => {
+          if(res.state == 'success') {
+            return res.data
+          }
+        }).then( payment => {
+          const paymentsModal = new bootstrap.Modal(
           document.getElementById("payment-details"),
           {}
         );
         paymentsModal.show();
 
-        document.getElementById("details-id").value = payment.transactionId;
+        document.getElementById("details-id").value = payment._id;
         document.getElementById("details-status").value = payment.status;
         document.getElementById("details-user").value = payment.user;
         document.getElementById("details-price").value = payment.price;
@@ -257,6 +272,7 @@
           payment.paymentDate;
         document.getElementById("details-method").value =
           payment.paymentMethod;
+        })
       };
     </script>
 </html>
