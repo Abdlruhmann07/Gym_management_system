@@ -9,17 +9,17 @@ const userSchema = new Schema({
     firstname: {
         type: String,
         required: true,
-    },// required
+    },
     lastname: {
         type: String,
         required: true,
-    },// required
+    },
     username: {
         type: String,
         required: [true, 'User name is required'],
         trim: true,
         unique: true,
-    },// required
+    },
     email: {
         type: String,
         required: [true, 'Email is Required'],
@@ -31,12 +31,12 @@ const userSchema = new Schema({
             },
             message: "Invalid email format",
         },
-    },// required Unique
+    },
     password: {
         type: String,
         required: [true, 'Passowrd is Required'],
         minlength: [8, 'Too Short Passowrd'],
-    },// required
+    },
     confirmPassword: {
         type: String,
         required: [true, 'Please confirm your password'],
@@ -47,11 +47,11 @@ const userSchema = new Schema({
             },
             message: 'Password and confirmPassword do not match.',
         }
-    },// required
+    },
     phonenumber: {
         type: String,
         required: true,
-    },// required
+    },
     address: {
         street: {
             type: String,
@@ -69,7 +69,6 @@ const userSchema = new Schema({
         default: '',
         // required: false,
     },
-    // fields for members
     membershipPlan:
     {
         type: Schema.Types.ObjectId,
@@ -97,13 +96,6 @@ const userSchema = new Schema({
             default: []
         },
     ],
-    // fields for trainers
-    // payroll: {
-    //     type: Number,
-    //     required: function () {
-    //         return this.role === 'trainer';
-    //     }
-    // },// required
     trainerSessions: [
         {
             type: Schema.Types.ObjectId,

@@ -14,6 +14,15 @@
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
       crossorigin="anonymous"
     ></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
     <title>Staff</title>
     <style>
       a {
@@ -96,27 +105,29 @@
                 <th class="col">Title</th>
                 <th class="col">Description</th>
                 <th class="col">Price (L.E)</th>
-                <th class="col" colspan="2">Duration</th>
+                <th class="col" colspan="2">Duration</th> <!-- colspan="2" -->
                 <th class="col">Details</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td class="col">1</td>
-                <td class="col">A</td>
-                <td class="col">test test</td>
-                <td class="col">200</td>
-                <td class="col">30</td>
-                <td class="col">Days</td>
-                <td class="col">
-                  <button
-                    class="btn btn-secondary"
-                    onclick="showPlanDetailsModal(1)"
-                  >
-                    View Details
-                  </button>
-                </td>
-              </tr>
+              <% memberships.forEach(plan => { %>
+                <tr>
+                  <td class="col"><%=plan._id%></td>
+                  <td class="col"><%=plan.membershipTitle%></td>
+                  <td class="col"><%=plan.description%></td>
+                  <td class="col"><%=plan.price%></td>
+                  <td class="col"><%=plan.duration.value%></td>
+                  <td class="col"><%=plan.duration.unit%></td>
+                  <td class="col">
+                    <button
+                      class="btn btn-secondary"
+                      onclick="showPlanDetailsModal('<%=plan._id%>')"
+                    >
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              <% }) %>
             </tbody>
             <!-- Plan Details Modal -->
             <div
@@ -144,9 +155,10 @@
                     ></button>
                   </div>
                   <form
+                    id="plan-form"
                     class="needs-validation"
                     novalidate
-                    onsubmit="return updatePlan(this)"
+                    onsubmit=""
                   >
                     <div class="modal-body">
                       <div class="mb-3">
@@ -231,9 +243,9 @@
                               class="form-select"
                               aria-label="Default select example"
                             >
-                              <option value="Days">Days</option>
-                              <option value="Months">Months</option>
-                              <option value="Years">Years</option>
+                              <option value="days">Days</option>
+                              <option value="months">Months</option>
+                              <option value="years">Years</option>
                             </select>
                             <div class="invalid-feedback">
                               Duration Unit is required
@@ -246,8 +258,9 @@
                       <div class="d-flex justify-content-between w-100">
                         <div>
                           <button
-                            onclick="deletePlan(1)"
+                            id="plan-delete"
                             class="btn btn-danger"
+                            type="button"
                           >
                             Delete
                           </button>
@@ -309,7 +322,7 @@
                 <form
                   class="needs-validation"
                   novalidate
-                  onsubmit="return addPlan(this)"
+                  onsubmit="return createPlan(this)"
                 >
                   <div class="modal-body">
                     <div class="mb-3">
@@ -362,7 +375,7 @@
                             type="text"
                             class="form-control"
                             required
-                            id="duration"
+                            id="durationValue"
                             placeholder=""
                           />
                           <div class="invalid-feedback">
@@ -372,7 +385,7 @@
                         <div class="col-12 col-md-6">
                           <select
                             name="unit"
-                            id="unit"
+                            id="durationUnit"
                             class="form-select"
                             aria-label="Default select example"
                           >
@@ -417,11 +430,10 @@
           form.addEventListener(
             "submit",
             (event) => {
-              if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-              }
-
+              // if (!form.checkValidity()) {
+              // }
+              event.preventDefault();
+              event.stopPropagation();
               form.classList.add("was-validated");
             },
             false
@@ -431,7 +443,7 @@
 
       const updatePlan = (planId) => {
         const id = document.getElementById("details-id").value;
-        const title = document.getElementById("details-title").value;
+        const membershipTitle = document.getElementById("details-title").value;
         const description = document.getElementById(
           "details-description"
         ).value;
@@ -444,17 +456,22 @@
         ).value;
 
         const payload = {
-          id,
-          title,
+          planId,
+          membershipTitle,
           description,
           price,
-          durationValue,
-          durationUnit,
+          duration: {
+            value: durationValue,
+            unit: durationUnit,
+          }
         };
 
         fetch(`/api/v1/admin/plans/updateplan/${planId}`, {
           method: "PUT", // PUT request
           body: JSON.stringify(payload),
+          headers: {
+            'content-type': 'application/json' 
+          }
         })
           .then((res) => {
             if (!res || !res.ok || res.status !== 200) {
@@ -490,14 +507,15 @@
       };
 
       const createPlan = () => {
-        const title = document.getElementById("title").value;
+        console.log('a7a')
+        const membershipTitle = document.getElementById("title").value;
         const description = document.getElementById("description").value;
         const price = document.getElementById("price").value;
         const durationValue = document.getElementById("durationValue").value;
         const durationUnit = document.getElementById("durationUnit").value;
 
         const payload = {
-          title,
+          membershipTitle,
           description,
           price,
           durationValue,
@@ -507,8 +525,12 @@
         fetch("/api/v1/admin/plans/addplan", {
           method: "POST",
           body: JSON.stringify(payload),
+          headers: {
+          "Content-Type": "application/json"
+        },
         })
           .then((res) => {
+            console.log(res);
             if (!res || !res.ok || res.status !== 200) {
               throw new Error("Error");
             } else {
@@ -546,7 +568,7 @@
           id: planId,
         };
 
-        fetch("/api/v1/admin/plans/deleteplan", {
+        fetch(`/api/v1/admin/plans/${planId}`, {
           method: "DELETE",
           body: JSON.stringify(payload),
         })
@@ -565,6 +587,7 @@
                   background: "var(--bs-success)",
                 },
               }).showToast();
+              window.location.reload();
             }
           })
           .catch((err) => {
@@ -584,20 +607,30 @@
       };
 
       const showPlanDetailsModal = (planId) => {
-        let plan = plans.filter((plan) => plan.id == planId)[0];
-        const sessionDetailsModal = new bootstrap.Modal(
+        // let plan = plans.filter((plan) => plan.id == planId)[0];
+        fetch(`/api/v1/admin/plans/${planId}`)
+        .then(res => res.json())
+        .then(res => {
+          if(res.state == 'success') {
+            return res.data[0]
+          }
+        }).then( plan => {
+          const sessionDetailsModal = new bootstrap.Modal(
           document.getElementById("plan-details"),
           {}
         );
         sessionDetailsModal.show();
-        document.getElementById("details-id").value = plan.id;
-        document.getElementById("details-title").value = plan.title;
+        document.getElementById("plan-form").setAttribute("onsubmit", `return updatePlan("${planId}")`);
+        document.getElementById("plan-delete").setAttribute("onclick", `deletePlan("${planId}")`);
+        document.getElementById("details-id").value = plan._id;
+        document.getElementById("details-title").value = plan.membershipTitle;
         document.getElementById("details-description").value = plan.description;
         document.getElementById("details-price").value = plan.price;
         document.getElementById("details-duration-value").value =
           plan.duration.value;
         document.getElementById("details-duration-unit").value =
           plan.duration.unit;
+        });
       };
     </script>
   </body>

@@ -41,7 +41,6 @@ exports.signup = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
         }).redirect('/api/v1/login');
-
     } catch (err) {
         res.status(400).json({
             status: 'failed',
@@ -79,7 +78,7 @@ exports.login = async (req, res, next) => {
         if (user.role === 'admin') {
             res.redirect('/api/v1/admin/dashboard');
         } else if (user.role === 'member') {
-            res.redirect('/api/v1')
+            res.redirect('/api/v1/member/home')
         }
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
@@ -101,7 +100,6 @@ exports.forgettPassword = async (req, res, next) => {
         }
         //2 GENERATE A RANDOM RESET TOKEN
         const resetOtp = await user.generateOTP();
-
         await user.save({ validateBeforeSave: false });
         //2 SEND THE TOKEN BACK TO THE USER EMAIL
         const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/resetPassword/${resetOtp}`
@@ -130,13 +128,6 @@ exports.verifyotp = async (req, res) => {
     try {
         // CHECK IF TOKEN EXISTS OR NOT EXPIRED
         const otp = req.body.otp;
-        console.log(typeof otp)
-        // const hashedToken = crypto
-        //     .createHash('sha256')
-        //     .update(token)
-        //     .digest('hex')
-        // console.log(hashedToken)
-        // find the user by the token
         const user = await User.findOne({
             otp: otp,
             otpExpires: {
@@ -149,7 +140,6 @@ exports.verifyotp = async (req, res) => {
         } else {
             res.render('setNewPassword', { otp, user });
         }
-
     } catch (err) {
         return res.status(500).json({ state: 'error', message: err.message })
     }

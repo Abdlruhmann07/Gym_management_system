@@ -15,5 +15,7 @@ router.post('/memberships/join-plan/:id', authenticate, joinMembershipPlan)
 router.get('/store', authenticate, getAllProducts)
 router.post('/store/addtocart/:productId', authenticate, addProductToCart)
 router.get('/store/mycart', authenticate, getmyCart)
-
+router.get('/home' , (req ,res) => {
+    res.render('member/home')
+})
 module.exports = router

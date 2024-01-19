@@ -28,7 +28,6 @@ exports.getAllMembers = async (req, res) => {
         const page = parseInt(req.query.page) - 1 || 0;
         const limit = parseInt(req.query.limit) || 5;
         const search = req.query.search || ""
-
         let query = {
             role: 'member',
         }
@@ -41,7 +40,7 @@ exports.getAllMembers = async (req, res) => {
         }
         const membersCount = await User.countDocuments(query)
         const totalPages = Math.ceil(membersCount / limit);
-        const members = await User.find(query).skip(page * limit).limit(limit);
+        const members = await User.find(query).skip(page * limit).limit(limit).populate('membershipPlan');
         if (members.length < 1) return res.status(404).send('No Members Yet!')
         res.render('admin/members', { members })
         // res.status(200).json({ state: 'success', data: members, pages: totalPages, count: membersCount });
@@ -58,7 +57,7 @@ exports.viewSingleMember = async (req, res) => {
         if (!member) {
             res.status(401).json('no member with this id')
         } else {
-            res.render('adminPages/singleMember', { member })
+            res.json({state: 'success' , data: member})
             // res.status(200).json({ state: 'success', member });
         }
     } catch (err) {
@@ -148,7 +147,6 @@ exports.asignMemberToPlan = async (req, res) => {
     try {
         const selectedPlan = await Membership.findById(planId);
         if (!selectedPlan) return res.status(404).json({ message: 'No Plan found' })
-
         const user = await User.findById(userId)
         if (!user) return res.status(404).json({ message: 'User not found' })
         //! payment progress
@@ -198,7 +196,7 @@ exports.asignMemberToPlan = async (req, res) => {
         user.subscription.daysLeft = daysLeft;
 
         // Save the updated user and plan
-        await user.save({validateBeforeSave : true});
+        await user.save({ validateBeforeSave: true });
         return res.status(200)
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message })

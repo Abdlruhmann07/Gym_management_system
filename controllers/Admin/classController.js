@@ -48,7 +48,7 @@ exports.getAllClasses = async (req, res) => {
         }).skip(page * limit).limit(limit);
 
         if (sessions.length === 0) return res.status(404).json('No classes yet');
-
+        
         res.render('admin/sessions', { sessions })
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
