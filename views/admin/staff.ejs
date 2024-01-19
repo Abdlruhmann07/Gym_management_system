@@ -157,9 +157,10 @@
                   ></button>
                 </div>
                 <form
+                  id="staff-form"
                   class="needs-validation"
                   novalidate
-                  onsubmit="return updateStaff(this)"
+                  onsubmit=""
                 >
                   <div class="modal-body">
                     <div class="mb-3">
@@ -257,7 +258,7 @@
                   <div class="modal-footer">
                     <div class="d-flex justify-content-between w-100">
                         <div>
-                          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="deleteStaff(1)">
+                          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
                             Delete
                           </button>
                         </div>
@@ -310,10 +311,9 @@
                 ></button>
               </div>
               <form
-                id="staff-form"
                 class="needs-validation"
                 novalidate
-                onsubmit=""
+                onsubmit="return addStaff()"
               >
                 <div class="modal-body">
                   <div class="row mb-3">
@@ -425,25 +425,16 @@
                     <div class="invalid-feedback">Role is required</div>
                   </div>
                 <div class="modal-footer">
-                  <div class="d-flex justify-content-between w-100">
-                      <div>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="staff-delete">
-                          Delete
-                        </button>
-                      </div>
-                      <div>
-                        <button
-                          type="button"
-                          class="btn btn-secondary"
-                          data-bs-dismiss="modal"
-                        >
-                          Close
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                          Update
-                        </button>
-                      </div>
-                  </div>
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                      Create
+                    </button>
                 </div>
               </form>
             </div>
@@ -646,7 +637,7 @@
         .then(data => {
           const staffDetailsModal = new bootstrap.Modal(document.getElementById('staff-details'), {})
           staffDetailsModal.show();
-          document.getElementById("staff-from").setAttribute('onsubmit', `return addStaff("${staffId}")`)
+          document.getElementById("staff-from").setAttribute('onsubmit', `return updateStaff("${staffId}")`)
           document.getElementById("staff-delete").setAttribute('onclick', `deleteStaff("${staffId}")`)
           document.getElementById("id").value = data.id
           document.getElementById("firstname").value = data.firstname
