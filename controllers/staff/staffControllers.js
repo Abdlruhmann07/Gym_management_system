@@ -1,6 +1,19 @@
 const User = require('../../models/user')
 const Attendance = require('../../models/attendance');
 const Ticket = require('../../models/ticket');
+// search member
+exports.searchMember = async (req, res) => {
+    const checkinCode = req.body;
+    try {
+        const member = await User.findOne({ checkinCode })
+        if (!member) {
+            return res.status(404).json({ state: 'fail', message: 'No member found' })
+        }
+        return res.status(200).json({ state: 'success', data: member })
+    } catch (err) {
+        return res.status(500).json({ state: 'fail', message: err.message });
+    }
+}
 // checkin member attendance
 exports.checkinMembers = async (req, res) => {
     const { checkInCode } = req.body;
@@ -11,10 +24,10 @@ exports.checkinMembers = async (req, res) => {
         }
         if (!member.subscription.isActive || !member.membershipPlan) {
             return res.status(401).json({ message: 'your plan has expired , please subscribe!' });
-        } 
+        }
         // decrement the days left
-        if(member.subscription.daysLeft > 0 ) {
-            member.subscription.daysLeft --;
+        if (member.subscription.daysLeft > 0) {
+            member.subscription.daysLeft--;
             // create attendace document
             const memberAttendance = await new Attendance({
                 memberId: member._id,
@@ -121,4 +134,24 @@ exports.reportTicket = async (req, res) => {
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
     }
+}
+
+// get pages
+exports.attendance = async (req, res) => {
+    res.render('staff/attendance')
+}
+exports.newMember = (req, res) => {
+    res.render('staff/new-member')
+}
+exports.renewPage = (req, res) => {
+    res.render('staff/renew-plan')
+}
+exports.changePlan = (req, res) => {
+    res.render('staff/change-plan')
+}
+exports.reportProblem = (req, res) => {
+    res.render('staff/report-problem')
+}
+exports.paymentHistory = async (req, res) => {
+    res.render('staff/payment-history')
 }

@@ -59,7 +59,7 @@ exports.staffLogin = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
         });
-        res.redirect('/api/v1/staff/test');
+        res.redirect('/api/v1/staff/attendance');
     } catch (err) {
         res.status(500).json({ state: 'error', message: err.message });
     }
@@ -155,5 +155,5 @@ exports.getSignup = (req, res) => {
 }
 
 exports.getLogin = (req, res) => {
-    res.render('s-login');
+    res.render('staff/s-login');
 }
