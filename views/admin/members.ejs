@@ -58,29 +58,40 @@
     <div class="row h-100 d-flex">
       <div class="col-3 flex-grow-1">
         <!-- SIDEBAR -->
-        <div class="sidebar p-2 pt-5 h-100">
-          <a href="/api/v1/admin/dashboard">
-            <div class="sidebar--page my-1 p-2 fs-5 rounded">
-              Dashboard
+        <div class="col-3 flex-grow-1">
+          <div class="sidebar p-2 pt-5 h-100">
+            <div class="h-100 d-flex flex-column justify-content-between">
+              <div>
+                <a href="/api/v1/admin/dashboard">
+                  <div class="sidebar--page my-1 p-2 fs-5 rounded">
+                    Dashboard
+                  </div>
+                </a>
+                <a href="/api/v1/admin/sessions">
+                  <div class="sidebar--page my-1 p-2 fs-5 rounded">Sessions</div>
+                </a>
+                <a href="/api/v1/admin/plans">
+                  <div class="sidebar--page my-1 p-2 fs-5 rounded">Plans</div>
+                </a>
+                <a href="/api/v1/admin/members">
+                  <div class="sidebar--page my-1 p-2 fs-5 rounded active">Memebers</div>
+                </a>
+                <a href="/api/v1/admin/staff">
+                  <div class="sidebar--page my-1 p-2 fs-5 rounded">Staff</div>
+                </a>
+                <a href="/api/v1/admin/payments">
+                  <div class="sidebar--page my-1 p-2 fs-5 rounded">Payments</div>
+                </a>
+              </div>
+
+              <div class="p-2">
+                <button class="btn btn-danger w-100" onclick="logout()">Sign out</button>
+              </div>
+
             </div>
-          </a>
-          <a href="/api/v1/admin/sessions">
-            <div class="sidebar--page my-1 p-2 fs-5 rounded">Sessions</div>
-          </a>
-          <a href="/api/v1/admin/plans">
-            <div class="sidebar--page my-1 p-2 fs-5 rounded">Plans</div>
-          </a>
-          <a href="/api/v1/admin/members">
-            <div class="sidebar--page active my-1 p-2 fs-5 rounded">Memebers</div>
-          </a>
-          <a href="/api/v1/admin/staff">
-            <div class="sidebar--page my-1 p-2 fs-5 rounded">Staff</div>
-          </a>
-          <a href="/api/v1/admin/payments">
-            <div class="sidebar--page my-1 p-2 fs-5 rounded">Payments</div>
-          </a>
+          </div>
         </div>
-        <!-- SIDEBAR -->
+      <!-- SIDEBAR -->
       </div>
       <div class="col-9 flex-grow-1">
         <main class="p-2 pt-5 h-100">
@@ -657,6 +668,28 @@
           document.getElementById("membershipPlan").value = member.membershipPlan ? member.membershipPlan : ""
         });
       }
+      
+      const logout = () => {
+          fetch('/api/v1/logout')
+          .then(res => {
+              if(!res || !res.ok) throw new Error('Something Went Wrong');
+              window.location.href = '/api/v1/login';
+          })
+          .catch((err) => {
+            Toastify({
+              text: "Something went wrong",
+              duration: 3000,
+              close: true,
+              gravity: "top", // `top` or `bottom`
+              position: "center", // `left`, `center` or `right`
+              stopOnFocus: false,
+              style: {
+                background: "var(--bs-danger)",
+              },
+            }).showToast();
+            console.log(err);
+          });
+        }
     </script>
   </body>
 </html>
