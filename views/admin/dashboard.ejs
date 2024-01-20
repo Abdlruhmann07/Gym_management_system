@@ -96,29 +96,29 @@
           <div class="row">
             <div class="col-12 col-md-6 col-lg-3">
               <div class="metric-box rounded p-2">
-                <h2>500</h2>
-                <p>TEST</p>
+                <h2>5</h2>
+                <p>Total Members</p>
               </div>
             </div>
 
             <div class="col-12 col-md-6 col-lg-3">
               <div class="metric-box rounded p-2">
-                <h2>500</h2>
-                <p>TEST</p>
+                <h2>1200 L.E</h2>
+                <p>Total Revenue</p>
               </div>
             </div>
 
             <div class="col-12 col-md-6 col-lg-3">
               <div class="metric-box rounded p-2">
-                <h2>500</h2>
-                <p>TEST</p>
+                <h2>2.57</h2>
+                <p>Daily Average Attendance</p>
               </div>
             </div>
 
             <div class="col-12 col-md-6 col-lg-3">
               <div class="metric-box rounded p-2">
-                <h2>500</h2>
-                <p>TEST</p>
+                <h2>100%</h2>
+                <p>Membership Renewals</p>
               </div>
             </div>
           </div>
@@ -127,7 +127,7 @@
           <div class="row mt-5">
             <div class="col-12 col-lg-8">
               <div class="card rounded h-100 p-2">
-                <h2>Title</h2>
+                <h2>Membership Growth</h2>
                 <div
                   class="d-flex flex-column justify-content-center flex-grow-1"
                 >
@@ -138,7 +138,7 @@
 
             <div class="col-12 col-lg-4">
               <div class="card rounded h-100 p-2">
-                <h2>Title</h2>
+                <h2>Membership Plans</h2>
                 <div
                   class="d-flex flex-column justify-content-center flex-grow-1"
                 >
@@ -151,7 +151,7 @@
           <div class="row mt-5">
             <div class="col-12">
               <div class="card rounded h-100 p-2">
-                <h2>Title</h2>
+                <h2>Attendance</h2>
                 <div
                   class="d-flex flex-column justify-content-center flex-grow-1"
                 >
@@ -175,12 +175,8 @@
       const options = {
         series: [
           {
-            name: "series1",
-            data: [31, 40, 28, 51, 42, 109, 100],
-          },
-          {
-            name: "series2",
-            data: [11, 32, 45, 32, 34, 52, 41],
+            name: "Members",
+            data: [1, 1, 1, 3, 5, 2, 5, 7, 10, 8, 6, 3, 7, 5, 4, 5, 2, 2, 3, 5],
           },
         ],
         chart: {
@@ -196,18 +192,31 @@
         xaxis: {
           type: "datetime",
           categories: [
-            "2018-09-19T00:00:00.000Z",
-            "2018-09-19T01:30:00.000Z",
-            "2018-09-19T02:30:00.000Z",
-            "2018-09-19T03:30:00.000Z",
-            "2018-09-19T04:30:00.000Z",
-            "2018-09-19T05:30:00.000Z",
-            "2018-09-19T06:30:00.000Z",
+            "2024-01-1",
+            "2024-01-2",
+            "2024-01-3",
+            "2024-01-4",
+            "2024-01-5",
+            "2024-01-6",
+            "2024-01-7",
+            "2024-01-8",
+            "2024-01-9",
+            "2024-01-10",
+            "2024-01-11",
+            "2024-01-12",
+            "2024-01-13",
+            "2024-01-14",
+            "2024-01-15",
+            "2024-01-16",
+            "2024-01-17",
+            "2024-01-18",
+            "2024-01-19",
+            "2024-01-20",
           ],
         },
         tooltip: {
           x: {
-            format: "dd/MM/yy HH:mm",
+            format: "dd/MM/yyyy",
           },
         },
       };
@@ -216,12 +225,12 @@
       chart.render();
 
       const options2 = {
-        series: [44, 55, 13, 43, 22],
+        series: [1, 1, 3,],
         legend: { position: "bottom" },
         chart: {
           type: "pie",
         },
-        labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
+        labels: ["Golden", "Silver", "Bronze",],
         responsive: [
           {
             breakpoint: 480,
@@ -246,8 +255,8 @@
       var options3 = {
         series: [
           {
-            name: "Inflation",
-            data: [2.3, 3.1, 4.0, 10.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2],
+            name: "attendance",
+            data: [1, 2, 3, 1, 2, 4, 5],
           },
         ],
         chart: {
@@ -265,7 +274,7 @@
         dataLabels: {
           enabled: true,
           formatter: function (val) {
-            return val + "%";
+            return val
           },
           offsetY: -20,
           style: {
@@ -276,18 +285,13 @@
 
         xaxis: {
           categories: [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
+            "Saturday",
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednsday",
+            "Thursday",
+            "Friday",
           ],
           position: "top",
           axisBorder: {
@@ -322,45 +326,14 @@
           labels: {
             show: false,
             formatter: function (val) {
-              return val + "%";
+              return val + " Members";
             },
-          },
-        },
-        title: {
-          text: "Monthly Inflation in Argentina, 2002",
-          floating: true,
-          offsetY: 330,
-          align: "center",
-          style: {
-            color: "#444",
           },
         },
       };
 
       var chart3 = new ApexCharts(document.querySelector("#chart3"), options3);
       chart3.render();
-
-      const logout = () => {
-            fetch('/api/v1/logout')
-            .then(res => {
-                if(!res || !res.ok) throw new Error('Something Went Wrong');
-                window.location.href = '/api/v1/login';
-            })
-            .catch((err) => {
-              Toastify({
-                text: "Something went wrong",
-                duration: 3000,
-                close: true,
-                gravity: "top", // `top` or `bottom`
-                position: "center", // `left`, `center` or `right`
-                stopOnFocus: false,
-                style: {
-                  background: "var(--bs-danger)",
-                },
-              }).showToast();
-              console.log(err);
-            });
-        }
     </script>
   </body>
 </html>
